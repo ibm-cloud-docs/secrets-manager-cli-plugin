@@ -34,7 +34,7 @@ Also provide an appropriate ID above that aligns with your offering name, for ex
 The short description section should include one to two sentences describing why a developer would want to use this cli. This should be conversational style. For search engine optimization, include your offering's CLI name. Keep the {: shortdesc} after the first paragraph so that the framework renders it properly.
 Example: -->
 
-The {{site.data.keyword.cloud}} command-line interface (CLI) provides extra capabilities for service offerings. You can use {{site.data.keyword.cloud_notm}} CLI to manage V2 service brokers and templates.
+You can use the {{site.data.keyword.secrets-manager_full}} command-line interface (CLI) to manage secrets in your {{site.data.keyword.secrets-manager_short}} instance.
 {: shortdesc} 
 
 <!-- Prerequisites: REQUIRED
@@ -51,9 +51,6 @@ This section tells users what's required to install and use the CLI commands. If
    ibmcloud plugin install secrets-manager
    ```
    {: pre}
-   <!-- Replace the <cli-plugin> above with the name of your CLI plug-in. Run 'ibmcloud plugin repo-plugins' to find the name.-->
-
-<!-- Optionally include any other post-installation configuration that might be required for your service. -->
 
     You're notified on the command line when updates to the {{site.data.keyword.cloud_notm}} CLI and plug-ins are available. Be sure to keep your CLI up to date so that you can use the latest commands. You can view the current version of all installed plug-ins by running `ibmcloud plugin list`.
     {: tip}
