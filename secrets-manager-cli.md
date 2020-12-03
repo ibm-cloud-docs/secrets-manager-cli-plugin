@@ -27,7 +27,7 @@ Name your file `offering-cli-name.md`, for example, `container-registry-cli.md` 
 In the title, list the name of your CLI, such as "Container Registry CLI (ibmcloud cr): https://cloud.ibm.com/docs/cli?topic=container-registry-cli-plugin-containerregcli
 Also provide an appropriate ID above that aligns with your offering name, for example: #container-registry-cli. *All* IDs must be unique across *all* CLI references. -->
 
-# Secrets Manager CLI (ibmcloud sm)
+# Secrets Manager CLI
 {: #secrets-manager-cli}
 
 <!-- Short description: REQUIRED
