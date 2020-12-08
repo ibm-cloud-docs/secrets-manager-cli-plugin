@@ -67,13 +67,13 @@ Example:
 ## Config
 {: #secrets-manager-config-cli}
 
-### ibmcloud secrets-manager put-config (Configure secrets of a given type)
+### ibmcloud secrets-manager put-config
 {: #secrets-manager-cli-put-config-command}
 
 Updates the configuration for the given secret type.
 
 ```sh
-ibmcloud secrets-manager put-config --secret-type SECRET-TYPE --set-engine-config-one-of SET-ENGINE-CONFIG-ONE-OF 
+ibmcloud secrets-manager put-config --secret-type SECRET-TYPE --engine-config-one-of ENGINE-CONFIG-ONE-OF 
 ```
 
 
@@ -84,11 +84,11 @@ ibmcloud secrets-manager put-config --secret-type SECRET-TYPE --set-engine-confi
 <dt>--secret-type (string)</dt>
 <dd>The secret type. Required.</dd>
 <dd>Allowable values are: iam_credentials</dd>
-<dt>--set-engine-config-one-of (SetEngineConfigOneOf)</dt>
-<dd>The base request for updating the configuration of a secret type. Required.</dd>
+<dt>--engine-config-one-of (EngineConfigOneOf)</dt>
+<dd> Required.</dd>
 </dl>
 
-### ibmcloud secrets-manager config (Get the configuration for a secret type)
+### ibmcloud secrets-manager config
 {: #secrets-manager-cli-config-command}
 
 Retrieves the configuration that is associated with the given secret type.
@@ -110,7 +110,7 @@ ibmcloud secrets-manager config --secret-type SECRET-TYPE
 ## Policies 
 {: #secrets-manager-policies-cli}
 
-### ibmcloud secrets-manager put-policy (Set secret policies)
+### ibmcloud secrets-manager put-policy
 {: #secrets-manager-cli-put-policy-command}
 
 Creates or updates one or more policies for the specified secret.
@@ -139,7 +139,7 @@ ibmcloud secrets-manager put-policy --secret-type SECRET-TYPE --id ID --metadata
 <dd>Allowable values are: rotation</dd>
 </dl>
 
-### ibmcloud secrets-manager policy (List secret policies)
+### ibmcloud secrets-manager policy
 {: #secrets-manager-cli-policy-command}
 
 Retrieves a list of policies that are associated with a specified secret.
@@ -164,10 +164,10 @@ ibmcloud secrets-manager policy --secret-type SECRET-TYPE --id ID [--policy POLI
 <dd>Allowable values are: rotation</dd>
 </dl>
 
-## Secret groups
+## Secret groups 
 {: #secrets-manager-secret-groups-cli}
 
-### ibmcloud secrets-manager secret-group-create (Create a secret group)
+### ibmcloud secrets-manager secret-group-create
 {: #secrets-manager-cli-secret-group-create-command}
 
 Creates a secret group that you can use to organize secrets and control who on your team has access to them.
@@ -189,7 +189,7 @@ ibmcloud secrets-manager secret-group-create --metadata METADATA --resources RES
 <dd>A collection of resources. Required.</dd>
 </dl>
 
-### ibmcloud secrets-manager secret-groups (List secret groups)
+### ibmcloud secrets-manager secret-groups
 {: #secrets-manager-cli-secret-groups-command}
 
 Retrieves the list of secret groups that are available in your Secrets Manager instance.
@@ -199,7 +199,7 @@ ibmcloud secrets-manager secret-groups
 ```
 
 
-### ibmcloud secrets-manager secret-group (Get a secret group)
+### ibmcloud secrets-manager secret-group
 {: #secrets-manager-cli-secret-group-command}
 
 Retrieves the metadata of an existing secret group by specifying the ID of the group.
@@ -218,7 +218,7 @@ ibmcloud secrets-manager secret-group --id ID
 <dd>The value must match regular expression `/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/`</dd>
 </dl>
 
-### ibmcloud secrets-manager secret-group-metadata-update (Update a secret group)
+### ibmcloud secrets-manager secret-group-metadata-update
 {: #secrets-manager-cli-secret-group-metadata-update-command}
 
 Updates the metadata of an existing secret group, such as its name or description.
@@ -241,12 +241,12 @@ ibmcloud secrets-manager secret-group-metadata-update --id ID --metadata METADAT
 <dd>A collection of resources. Required.</dd>
 </dl>
 
-### ibmcloud secrets-manager secret-group-delete (Delete a secret group)
+### ibmcloud secrets-manager secret-group-delete
 {: #secrets-manager-cli-secret-group-delete-command}
 
 Deletes a secret group by specifying the ID of the secret group.
 
-**Note:** To delete a secret group, it must be empty. If you need to remove a secret group that contains secrets,  you must first [delete the secrets](#delete-secret) that are associated with the group.
+**Note:** To delete a secret group, it must be empty. If you need to remove a secret group that contains secrets, you must first [delete the secrets](#delete-secret) that are associated with the group.
 
 ```sh
 ibmcloud secrets-manager secret-group-delete --id ID 
@@ -265,7 +265,7 @@ ibmcloud secrets-manager secret-group-delete --id ID
 ## Secrets 
 {: #secrets-manager-secrets-cli}
 
-### ibmcloud secrets-manager secret-create (Create a secret)
+### ibmcloud secrets-manager secret-create
 {: #secrets-manager-cli-secret-create-command}
 
 Creates a secret that you can use to access or authenticate to a protected resource.
@@ -292,7 +292,7 @@ ibmcloud secrets-manager secret-create --secret-type SECRET-TYPE --metadata META
 <dd>A collection of resources. Required.</dd>
 </dl>
 
-### ibmcloud secrets-manager secrets (List secrets by type)
+### ibmcloud secrets-manager secrets
 {: #secrets-manager-cli-secrets-command}
 
 Retrieves a list of secrets based on the type that you specify.
@@ -323,7 +323,7 @@ ibmcloud secrets-manager secrets --secret-type SECRET-TYPE [--limit LIMIT] [--of
 <dd>The minimum value is `0`.</dd>
 </dl>
 
-### ibmcloud secrets-manager all-secrets (List all secrets)
+### ibmcloud secrets-manager all-secrets
 {: #secrets-manager-cli-all-secrets-command}
 
 Retrieves a list of all secrets in your Secrets Manager instance.
@@ -351,14 +351,14 @@ ibmcloud secrets-manager all-secrets [--limit LIMIT] [--offset OFFSET]
 <dd>The minimum value is `0`.</dd>
 </dl>
 
-### ibmcloud secrets-manager secret (Get a secret)
+### ibmcloud secrets-manager secret
 {: #secrets-manager-cli-secret-command}
 
 Retrieves a secret and its details by specifying the ID of the secret.
 
-A successful `GET /api/v1/secrets/{secret_type}/{id}` returns the secret data that is associated with your secret, along with other metadata. 
+A successful `GET /api/v1/secrets/{secret_type}/{id}` returns the secret data that is associated with your secret, along with other metadata.
 
-**Tip:** If you need to view only the details of a specified secret without retrieving its value, use 
+**Tip:** If you need to view only the details of a specified secret without retrieving its value, use
 [`GET /api/v1/secrets/{secret_type}/{id}/metadata`](#get-secret-metadata).
 
 ```sh
@@ -378,7 +378,7 @@ ibmcloud secrets-manager secret --secret-type SECRET-TYPE --id ID
 <dd>The value must match regular expression `/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/`</dd>
 </dl>
 
-### ibmcloud secrets-manager secret-update (Invoke an action on a secret)
+### ibmcloud secrets-manager secret-update
 {: #secrets-manager-cli-secret-update-command}
 
 Invokes an action on a specified secret. This method supports the following actions:
@@ -408,7 +408,7 @@ ibmcloud secrets-manager secret-update --secret-type SECRET-TYPE --id ID --actio
 <dd>The base request for invoking an action on a secret. Required.</dd>
 </dl>
 
-### ibmcloud secrets-manager secret-delete (Delete a secret)
+### ibmcloud secrets-manager secret-delete
 {: #secrets-manager-cli-secret-delete-command}
 
 Deletes a secret by specifying the ID of the secret.
@@ -430,12 +430,12 @@ ibmcloud secrets-manager secret-delete --secret-type SECRET-TYPE --id ID
 <dd>The value must match regular expression `/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/`</dd>
 </dl>
 
-### ibmcloud secrets-manager secret-metadata (Get secret metadata)
+### ibmcloud secrets-manager secret-metadata
 {: #secrets-manager-cli-secret-metadata-command}
 
 Retrieves the details of a secret by specifying the ID.
 
-A successful `GET /api/v1/secrets/{secret_type}/{id}/metadata` request returns only metadata about the secret,  such as its name and creation date. To retrieve the value of a secret, use the [Get a secret](#get-secret)  method.
+A successful `GET /api/v1/secrets/{secret_type}/{id}/metadata` request returns only metadata about the secret, such as its name and creation date. To retrieve the value of a secret, use the [Get a secret](#get-secret) method.
 
 ```sh
 ibmcloud secrets-manager secret-metadata --secret-type SECRET-TYPE --id ID 
@@ -454,12 +454,12 @@ ibmcloud secrets-manager secret-metadata --secret-type SECRET-TYPE --id ID
 <dd>The value must match regular expression `/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/`</dd>
 </dl>
 
-### ibmcloud secrets-manager secret-metadata-update (Update secret metadata)
+### ibmcloud secrets-manager secret-metadata-update
 {: #secrets-manager-cli-secret-metadata-update-command}
 
 Updates the metadata of a secret, such as its name or description.
 
-To update the actual contents of a secret, rotate the secret by using the [Invoke an action on a secret](#update-secret)  method.
+To update the actual contents of a secret, rotate the secret by using the [Invoke an action on a secret](#update-secret) method.
 
 ```sh
 ibmcloud secrets-manager secret-metadata-update --secret-type SECRET-TYPE --id ID --metadata METADATA --resources RESOURCES 
