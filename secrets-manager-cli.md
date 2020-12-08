@@ -54,6 +54,15 @@ This section tells users what's required to install and use the CLI commands. If
 
     You're notified on the command line when updates to the {{site.data.keyword.cloud_notm}} CLI and plug-ins are available. Be sure to keep your CLI up to date so that you can use the latest commands. You can view the current version of all installed plug-ins by running `ibmcloud plugin list`.
     {: tip}
+* Export an environment variable with your Secrets Manager service endpoint URL.
+
+  ```
+  export IBM_CLOUD_SECRETS_MANAGER_API_URL=https://{instance_ID}.{region}.secrets-manager.appdomain.cloud
+  ```
+  {: pre}
+  
+  Replace `{instance_ID}` and `{region}` with the values that apply to your Secrets Manager service instance. To find the endpoint URL that is specific to your instance, you can copy it from the **Endpoints** page in the Secrets Manager UI. For more information, see [Retrieving your service endpoint URLs](/docs/secrets-manager?topic=secrets-manager-endpoints#retrieve-service-endpoints)
+
 
 <!-- Other Prerequisites/Authorization/Environment: OPTIONAL
 List any other prerequisites/authorization/environments that are required to use the CLI commands. Or give a brief introduction to the prerequisites/authorization/environments that the CLI commands might use. Use H3 headings (###) as needed to organize your content.
