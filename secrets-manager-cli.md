@@ -56,13 +56,15 @@ This section tells users what's required to install and use the CLI commands. If
     {: tip}
 * Export an environment variable with your Secrets Manager service endpoint URL.
 
-  ```
-  export IBM_CLOUD_SECRETS_MANAGER_API_URL=https://{instance_ID}.{region}.secrets-manager.appdomain.cloud
-  ```
-  {: pre}
+    ```
+    export IBM_CLOUD_SECRETS_MANAGER_API_URL=https://{instance_ID}.{region}.secrets-manager.appdomain.cloud
+    ```
+    {: pre}
   
-  Replace `{instance_ID}` and `{region}` with the values that apply to your Secrets Manager service instance. To find the endpoint URL that is specific to your instance, you can copy it from the **Endpoints** page in the Secrets Manager UI. For more information, see [Retrieving your service endpoint URLs](/docs/secrets-manager?topic=secrets-manager-endpoints#retrieve-service-endpoints)
+    Replace `{instance_ID}` and `{region}` with the values that apply to your Secrets Manager service instance. To find the endpoint URL that is specific to your instance, you can copy it from the **Endpoints** page in the Secrets Manager UI. For more information, see [Retrieving your service endpoint URLs](/docs/secrets-manager?topic=secrets-manager-endpoints#retrieve-service-endpoints)
 
+    If you copy your service endpoint URL from the Secrets Manager UI, be sure to trim `/api` from the URL before you export it as variable to use with the CLI plug-in.
+    {: important}
 
 <!-- Other Prerequisites/Authorization/Environment: OPTIONAL
 List any other prerequisites/authorization/environments that are required to use the CLI commands. Or give a brief introduction to the prerequisites/authorization/environments that the CLI commands might use. Use H3 headings (###) as needed to organize your content.
