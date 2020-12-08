@@ -2,7 +2,7 @@
  
 copyright:
   years: 2020
-lastupdated: "2020-12-02"
+lastupdated: "2020-12-08"
 
 subcollection: secrets-manager
 
