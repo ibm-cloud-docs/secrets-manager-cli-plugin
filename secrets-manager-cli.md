@@ -2,7 +2,7 @@
  
 copyright:
   years: 2020
-lastupdated: "2020-12-08"
+lastupdated: "2020-12-14"
 
 subcollection: secrets-manager
 
@@ -28,7 +28,7 @@ Name your file `offering-cli-name.md`, for example, `container-registry-cli.md` 
 In the title, list the name of your CLI, such as "Container Registry CLI (ibmcloud cr): https://cloud.ibm.com/docs/cli?topic=container-registry-cli-plugin-containerregcli
 Also provide an appropriate ID above that aligns with your offering name, for example: #container-registry-cli. *All* IDs must be unique across *all* CLI references. -->
 
-# Secrets Manager CLI
+# {{site.data.keyword.secrets-manager_short}} CLI
 {: #secrets-manager-cli}
 
 <!-- Short description: REQUIRED
@@ -46,7 +46,7 @@ This section tells users what's required to install and use the CLI commands. If
 {: #secrets-manager-cli-prereq}
 
 * Install the [{{site.data.keyword.cloud_notm}} CLI](/docs/cli?topic=cli-getting-started).
-* Install the Secrets Manager CLI by running the following command:
+* Install the {{site.data.keyword.secrets-manager_short}} CLI by running the following command:
 
    ```sh
    ibmcloud plugin install secrets-manager
@@ -55,16 +55,16 @@ This section tells users what's required to install and use the CLI commands. If
 
     You're notified on the command line when updates to the {{site.data.keyword.cloud_notm}} CLI and plug-ins are available. Be sure to keep your CLI up to date so that you can use the latest commands. You can view the current version of all installed plug-ins by running `ibmcloud plugin list`.
     {: tip}
-* Export an environment variable with your Secrets Manager service endpoint URL.
+* Export an environment variable with your {{site.data.keyword.secrets-manager_short}} service endpoint URL.
 
     ```
     export IBM_CLOUD_SECRETS_MANAGER_API_URL=https://{instance_ID}.{region}.secrets-manager.appdomain.cloud
     ```
     {: pre}
   
-    Replace `{instance_ID}` and `{region}` with the values that apply to your Secrets Manager service instance. To find the endpoint URL that is specific to your instance, you can copy it from the **Endpoints** page in the Secrets Manager UI. For more information, see [Retrieving your service endpoint URLs](/docs/secrets-manager?topic=secrets-manager-endpoints#retrieve-service-endpoints)
+    Replace `{instance_ID}` and `{region}` with the values that apply to your {{site.data.keyword.secrets-manager_short}} service instance. To find the endpoint URL that is specific to your instance, you can copy it from the **Endpoints** page in the {{site.data.keyword.secrets-manager_short}} UI. For more information, see [Retrieving your service endpoint URLs](/docs/secrets-manager?topic=secrets-manager-endpoints#retrieve-service-endpoints)
 
-    If you copy your service endpoint URL from the Secrets Manager UI, be sure to trim `/api` from the URL before you export it as variable to use with the CLI plug-in.
+    If you copy your service endpoint URL from the {{site.data.keyword.secrets-manager_short}} UI, be sure to trim `/api` from the URL before you export it as variable to use with the CLI plug-in.
     {: important}
 
 <!-- Other Prerequisites/Authorization/Environment: OPTIONAL
@@ -79,18 +79,18 @@ Example:
 ## Config
 {: #secrets-manager-config-cli}
 
-### ibmcloud secrets-manager put-config
-{: #secrets-manager-cli-put-config-command}
+### ibmcloud secrets-manager config-update
+{: #secrets-manager-cli-config-update-command}
 
 Updates the configuration for the given secret type.
 
 ```sh
-ibmcloud secrets-manager put-config --secret-type SECRET-TYPE --engine-config-one-of ENGINE-CONFIG-ONE-OF 
+ibmcloud secrets-manager config-update --secret-type SECRET-TYPE --engine-config-one-of ENGINE-CONFIG-ONE-OF 
 ```
 
 
 #### Command options
-{: #secrets-manager-put-config-cli-options}
+{: #secrets-manager-config-update-cli-options}
 
 <dl> 
 <dt>--secret-type (string)</dt>
@@ -119,21 +119,21 @@ ibmcloud secrets-manager config --secret-type SECRET-TYPE
 <dd>Allowable values are: iam_credentials</dd>
 </dl>
 
-## Policies 
+## Policies
 {: #secrets-manager-policies-cli}
 
-### ibmcloud secrets-manager put-policy
-{: #secrets-manager-cli-put-policy-command}
+### ibmcloud secrets-manager policy-update
+{: #secrets-manager-cli-policy-update-command}
 
-Creates or updates one or more policies for the specified secret.
+Creates or updates one or more policies, such as an [automatic rotation policy](http://cloud.ibm.com/docs/secrets-manager?topic=secrets-manager-rotate-secrets#auto-rotate-secret),  for the specified secret.
 
 ```sh
-ibmcloud secrets-manager put-policy --secret-type SECRET-TYPE --id ID --metadata METADATA --resources RESOURCES [--policy POLICY] 
+ibmcloud secrets-manager policy-update --secret-type SECRET-TYPE --id ID --metadata METADATA --resources RESOURCES [--policy POLICY] 
 ```
 
 
 #### Command options
-{: #secrets-manager-put-policy-cli-options}
+{: #secrets-manager-policy-update-cli-options}
 
 <dl> 
 <dt>--secret-type (string)</dt>
@@ -176,7 +176,7 @@ ibmcloud secrets-manager policy --secret-type SECRET-TYPE --id ID [--policy POLI
 <dd>Allowable values are: rotation</dd>
 </dl>
 
-## Secret groups 
+## Secret groups
 {: #secrets-manager-secret-groups-cli}
 
 ### ibmcloud secrets-manager secret-group-create
@@ -184,7 +184,7 @@ ibmcloud secrets-manager policy --secret-type SECRET-TYPE --id ID [--policy POLI
 
 Creates a secret group that you can use to organize secrets and control who on your team has access to them.
 
-A successful `POST /api/v1/secret_groups` request returns the ID value of the secret group, along with other  metadata. To learn more about secret groups, check out the [docs](/docs/secrets-manager?topic=secrets-manager-secret-groups).
+A successful request returns the ID value of the secret group, along with other metadata. To learn more about  secret groups, check out the [docs](/docs/secrets-manager?topic=secrets-manager-secret-groups).
 
 ```sh
 ibmcloud secrets-manager secret-group-create --metadata METADATA --resources RESOURCES 
@@ -204,7 +204,7 @@ ibmcloud secrets-manager secret-group-create --metadata METADATA --resources RES
 ### ibmcloud secrets-manager secret-groups
 {: #secrets-manager-cli-secret-groups-command}
 
-Retrieves the list of secret groups that are available in your Secrets Manager instance.
+Retrieves the list of secret groups that are available in your {{site.data.keyword.secrets-manager_short}} instance.
 
 ```sh
 ibmcloud secrets-manager secret-groups 
@@ -258,7 +258,7 @@ ibmcloud secrets-manager secret-group-metadata-update --id ID --metadata METADAT
 
 Deletes a secret group by specifying the ID of the secret group.
 
-**Note:** To delete a secret group, it must be empty. If you need to remove a secret group that contains secrets, you must first [delete the secrets](#delete-secret) that are associated with the group.
+**Note:** To delete a secret group, it must be empty. If you need to remove a secret group that contains secrets, you must first [delete the secrets](#secrets-manager-cli-secret-delete-command) that are associated with the group.
 
 ```sh
 ibmcloud secrets-manager secret-group-delete --id ID 
@@ -274,7 +274,7 @@ ibmcloud secrets-manager secret-group-delete --id ID
 <dd>The value must match regular expression `/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/`</dd>
 </dl>
 
-## Secrets 
+## Secrets
 {: #secrets-manager-secrets-cli}
 
 ### ibmcloud secrets-manager secret-create
@@ -282,9 +282,9 @@ ibmcloud secrets-manager secret-group-delete --id ID
 
 Creates a secret that you can use to access or authenticate to a protected resource.
 
-A successful `POST /api/v1/secrets` request stores the secret in your dedicated instance based on the secret type and data that you specify. The response returns the ID value of the secret, along with other metadata.
+A successful request stores the secret in your dedicated instance based on the secret type and data that you  specify. The response returns the ID value of the secret, along with other metadata.
 
-To learn more about the types of secrets that you can create with Secrets Manager, check out the [docs](/docs/secrets-manager?topic=secrets-manager-secret-basics).
+To learn more about the types of secrets that you can create with {{site.data.keyword.secrets-manager_short}}, check out the [docs](/docs/secrets-manager?topic=secrets-manager-secret-basics).
 
 ```sh
 ibmcloud secrets-manager secret-create --secret-type SECRET-TYPE --metadata METADATA --resources RESOURCES 
@@ -322,13 +322,13 @@ ibmcloud secrets-manager secrets --secret-type SECRET-TYPE [--limit LIMIT] [--of
 <dd>The secret type. Required.</dd>
 <dd>Allowable values are: arbitrary, username_password, iam_credentials</dd>
 <dt>--limit (integer)</dt>
-<dd>The number of secrets to retrieve. By default, `GET /secrets/{secret-type}` returns the first 200 secrets. To retrieve a different set of secrets, use `limit` with `offset` to page through your available resources. The maximum value for `limit` is 5000.
+<dd>The number of secrets to retrieve. By default, list operations return the first 200 items. To retrieve a different set of items, use `limit` with `offset` to page through your available resources.
 
 **Usage:** If you have 20 secrets in your instance, and you want to retrieve only the first 5 secrets, use
 `../secrets/{secret-type}?limit=5`.</dd>
 <dd>The maximum value is `5000`. The minimum value is `1`.</dd>
 <dt>--offset (integer)</dt>
-<dd>The number of secrets to skip. By specifying `offset`, you retrieve a subset of secrets that starts with the `offset` value. Use `offset` with `limit` to page through your available resources.
+<dd>The number of secrets to skip. By specifying `offset`, you retrieve a subset of items that starts with the `offset` value. Use `offset` with `limit` to page through your available resources.
 
 **Usage:** If you have 100 secrets in your instance, and you want to retrieve secrets 26 through 50, use
 `../secrets/{secret-type}?offset=25&limit=25`.</dd>
@@ -338,7 +338,7 @@ ibmcloud secrets-manager secrets --secret-type SECRET-TYPE [--limit LIMIT] [--of
 ### ibmcloud secrets-manager all-secrets
 {: #secrets-manager-cli-all-secrets-command}
 
-Retrieves a list of all secrets in your Secrets Manager instance.
+Retrieves a list of all secrets in your {{site.data.keyword.secrets-manager_short}} instance.
 
 ```sh
 ibmcloud secrets-manager all-secrets [--limit LIMIT] [--offset OFFSET] 
@@ -350,13 +350,13 @@ ibmcloud secrets-manager all-secrets [--limit LIMIT] [--offset OFFSET]
 
 <dl> 
 <dt>--limit (integer)</dt>
-<dd>The number of secrets to retrieve. By default, `GET /secrets/{secret-type}` returns the first 200 secrets. To retrieve a different set of secrets, use `limit` with `offset` to page through your available resources. The maximum value for `limit` is 5000.
+<dd>The number of secrets to retrieve. By default, list operations return the first 200 items. To retrieve a different set of items, use `limit` with `offset` to page through your available resources.
 
 **Usage:** If you have 20 secrets in your instance, and you want to retrieve only the first 5 secrets, use
 `../secrets/{secret-type}?limit=5`.</dd>
 <dd>The maximum value is `5000`. The minimum value is `1`.</dd>
 <dt>--offset (integer)</dt>
-<dd>The number of secrets to skip. By specifying `offset`, you retrieve a subset of secrets that starts with the `offset` value. Use `offset` with `limit` to page through your available resources.
+<dd>The number of secrets to skip. By specifying `offset`, you retrieve a subset of items that starts with the `offset` value. Use `offset` with `limit` to page through your available resources.
 
 **Usage:** If you have 100 secrets in your instance, and you want to retrieve secrets 26 through 50, use
 `../secrets/{secret-type}?offset=25&limit=25`.</dd>
@@ -368,10 +368,7 @@ ibmcloud secrets-manager all-secrets [--limit LIMIT] [--offset OFFSET]
 
 Retrieves a secret and its details by specifying the ID of the secret.
 
-A successful `GET /api/v1/secrets/{secret_type}/{id}` returns the secret data that is associated with your secret, along with other metadata.
-
-**Tip:** If you need to view only the details of a specified secret without retrieving its value, use
-[`GET /api/v1/secrets/{secret_type}/{id}/metadata`](#get-secret-metadata).
+A successful request returns the secret data that is associated with your secret, along with other metadata. To  view only the details of a specified secret without retrieving its value, use the [Get secret metadata](#secrets-manager-cli-secret-metadata-command)  method.
 
 ```sh
 ibmcloud secrets-manager secret --secret-type SECRET-TYPE --id ID 
@@ -447,7 +444,7 @@ ibmcloud secrets-manager secret-delete --secret-type SECRET-TYPE --id ID
 
 Retrieves the details of a secret by specifying the ID.
 
-A successful `GET /api/v1/secrets/{secret_type}/{id}/metadata` request returns only metadata about the secret, such as its name and creation date. To retrieve the value of a secret, use the [Get a secret](#get-secret) method.
+A successful request returns only metadata about the secret, such as its name and creation date. To retrieve the  value of a secret, use the [Get a secret](#secrets-manager-cli-secret-command) method.
 
 ```sh
 ibmcloud secrets-manager secret-metadata --secret-type SECRET-TYPE --id ID 
@@ -471,7 +468,7 @@ ibmcloud secrets-manager secret-metadata --secret-type SECRET-TYPE --id ID
 
 Updates the metadata of a secret, such as its name or description.
 
-To update the actual contents of a secret, rotate the secret by using the [Invoke an action on a secret](#update-secret) method.
+To update the actual contents of a secret, rotate the secret by using the [Invoke an action on a secret](#secrets-manager-cli-secret-update-command) method.
 
 ```sh
 ibmcloud secrets-manager secret-metadata-update --secret-type SECRET-TYPE --id ID --metadata METADATA --resources RESOURCES 
