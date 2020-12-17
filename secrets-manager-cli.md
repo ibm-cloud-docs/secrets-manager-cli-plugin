@@ -324,15 +324,13 @@ ibmcloud secrets-manager secrets --secret-type SECRET-TYPE [--limit LIMIT] [--of
 <dd>The secret type. Required.</dd>
 <dd>Allowable values are: arbitrary, username_password, iam_credentials</dd>
 <dt>--limit (integer)</dt>
-<dd>The number of secrets to retrieve. By default, list operations return the first 200 items. To retrieve a different set of items, use `limit` with `offset` to page through your available resources.
-
-**Usage:** If you have 20 secrets in your instance, and you want to retrieve only the first 5 secrets, use
+<dd>The number of secrets to retrieve. By default, list operations return the first 200 items. To retrieve a different set of items, use `limit` with `offset` to page through your available resources.</dd>
+<dd>**Usage:** If you have 20 secrets in your instance, and you want to retrieve only the first 5 secrets, use
 `../secrets/{secret-type}?limit=5`.</dd>
 <dd>The maximum value is `5000`. The minimum value is `1`.</dd>
 <dt>--offset (integer)</dt>
-<dd>The number of secrets to skip. By specifying `offset`, you retrieve a subset of items that starts with the `offset` value. Use `offset` with `limit` to page through your available resources.
-
-**Usage:** If you have 100 secrets in your instance, and you want to retrieve secrets 26 through 50, use
+<dd>The number of secrets to skip. By specifying `offset`, you retrieve a subset of items that starts with the `offset` value. Use `offset` with `limit` to page through your available resources.</dd>
+<dd>**Usage:** If you have 100 secrets in your instance, and you want to retrieve secrets 26 through 50, use
 `../secrets/{secret-type}?offset=25&limit=25`.</dd>
 <dd>The minimum value is `0`.</dd>
 </dl>
@@ -352,15 +350,13 @@ ibmcloud secrets-manager all-secrets [--limit LIMIT] [--offset OFFSET]
 
 <dl> 
 <dt>--limit (integer)</dt>
-<dd>The number of secrets to retrieve. By default, list operations return the first 200 items. To retrieve a different set of items, use `limit` with `offset` to page through your available resources.
-
-**Usage:** If you have 20 secrets in your instance, and you want to retrieve only the first 5 secrets, use
+<dd>The number of secrets to retrieve. By default, list operations return the first 200 items. To retrieve a different set of items, use `limit` with `offset` to page through your available resources.</dd>
+<dd>**Usage:** If you have 20 secrets in your instance, and you want to retrieve only the first 5 secrets, use
 `../secrets/{secret-type}?limit=5`.</dd>
 <dd>The maximum value is `5000`. The minimum value is `1`.</dd>
 <dt>--offset (integer)</dt>
-<dd>The number of secrets to skip. By specifying `offset`, you retrieve a subset of items that starts with the `offset` value. Use `offset` with `limit` to page through your available resources.
-
-**Usage:** If you have 100 secrets in your instance, and you want to retrieve secrets 26 through 50, use
+<dd>The number of secrets to skip. By specifying `offset`, you retrieve a subset of items that starts with the `offset` value. Use `offset` with `limit` to page through your available resources.</dd>
+<dd>**Usage:** If you have 100 secrets in your instance, and you want to retrieve secrets 26 through 50, use
 `../secrets/{secret-type}?offset=25&limit=25`.</dd>
 <dd>The minimum value is `0`.</dd>
 </dl>
