@@ -261,14 +261,16 @@ Deletes a secret group by specifying the ID of the secret group.
 **Note:** To delete a secret group, it must be empty. If you need to remove a secret group that contains secrets, you must first [delete the secrets](#secrets-manager-cli-secret-delete-command) that are associated with the group.
 
 ```sh
-ibmcloud secrets-manager secret-group-delete --id ID 
+ibmcloud secrets-manager secret-group-delete --id ID [--force]
 ```
 
 
 #### Command options
 {: #secrets-manager-secret-group-delete-cli-options}
 
-<dl> 
+<dl>
+<dt>-f, --force</dt>
+<dd>Force the operation without a confirmation.</dd> 
 <dt>--id (string)</dt>
 <dd>The v4 UUID that uniquely identifies the secret group. Required.</dd>
 <dd>The value must match regular expression `/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/`</dd>
