@@ -425,7 +425,7 @@ ibmcloud secrets-manager secret-update --secret-type SECRET-TYPE --id ID --actio
 Deletes a secret by specifying the ID of the secret.
 
 ```sh
-ibmcloud secrets-manager secret-delete --secret-type SECRET-TYPE --id ID 
+ibmcloud secrets-manager secret-delete --secret-type SECRET-TYPE --id ID [--force]
 ```
 
 
@@ -433,6 +433,8 @@ ibmcloud secrets-manager secret-delete --secret-type SECRET-TYPE --id ID
 {: #secrets-manager-secret-delete-cli-options}
 
 <dl> 
+<dt>-f, --force</dt>
+<dd>Force the operation without a confirmation.</dd> 
 <dt>--secret-type (string)</dt>
 <dd>The secret type. Required.</dd>
 <dd>Allowable values are: arbitrary, username_password, iam_credentials</dd>
