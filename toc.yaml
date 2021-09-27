@@ -1,0 +1,17 @@
+toc:
+  properties:
+    subcollection: secrets-manager-cli-plugin
+    version: 2
+    category: security
+    audience: service
+    href: /docs/secrets-manager-cli-plugin
+    console-page: /catalog/services/secrets-manager
+    product-page: https://ibm.com/cloud/secrets-manager
+    path: secrets-manager-cli-plugin
+    label: Secrets Manager CLI reference
+
+entries:
+  - navgroup:
+      id: reference
+      topics:
+      - secrets-manager-cli.md

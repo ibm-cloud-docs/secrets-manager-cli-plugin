@@ -1,9 +1,0 @@
-{:navgroup: .navgroup}
-{:topicgroup: .topicgroup}
-
-{: .toc subcollection="secrets-manager-cli-plugin" href="/docs/secrets-manager-cli-plugin" path="secrets-manager-cli-plugin"}
-Secrets Manager CLI reference
-
-    {: .navgroup id="reference"}
-    secrets-manager-cli.md
-    {: .navgroup-end}
