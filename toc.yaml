@@ -10,8 +10,8 @@ toc:
     path: secrets-manager-cli-plugin
     label: Secrets Manager CLI reference
 
-entries:
-  - navgroup:
-      id: reference
-      topics:
-      - secrets-manager-cli.md
+  entries:
+    - navgroup:
+        id: reference
+        topics:
+        - secrets-manager-cli.md
