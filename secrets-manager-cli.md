@@ -2,7 +2,7 @@
 
 copyright:
   years: 2022
-lastupdated: "2022-09-19"
+lastupdated: "2022-09-22"
 
 subcollection: secrets-manager
 
@@ -2079,3 +2079,4 @@ The following example shows the format of the UpdateSecretVersionMetadata[] obje
 } ]
 ```
 {: codeblock}
+
