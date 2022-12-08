@@ -2,7 +2,7 @@
 
 copyright:
   years: 2022
-lastupdated: "2022-09-22"
+lastupdated: "2022-12-08"
 
 subcollection: secrets-manager
 
@@ -61,7 +61,7 @@ keywords: Secrets Manager CLI, Secrets Manager command line, Secrets Manager ter
 You can use the {{site.data.keyword.secrets-manager_full}} command-line interface (CLI) to manage secrets in your {{site.data.keyword.secrets-manager_short}} instance.
 {: shortdesc}
 
-Current version: **`0.1.23`**
+Current version: **`0.2`**
 
 ## Prerequisites
 {: #secrets-manager-cli-prereq}
@@ -175,7 +175,7 @@ ibmcloud secrets-manager secret-group \
 Update the metadata of an existing secret group, such as its name or description.
 
 ```sh
-ibmcloud secrets-manager secret-group-metadata-update --id ID --metadata METADATA --resources RESOURCES  
+ibmcloud secrets-manager secret-group-metadata-update --id ID --resources RESOURCES  
 ```
 
 
@@ -258,7 +258,7 @@ ibmcloud secrets-manager secret-create --secret-type SECRET-TYPE --resources RES
 `--secret-type` (string)
 :   The secret type. Required.
 
-    Allowable values are: `arbitrary`, `iam_credentials`, `imported_cert`, `public_cert`, `private_cert`, `username_password`, `kv`.
+    Allowable values are: `arbitrary`, `kv`, `iam_credentials`, `imported_cert`, `public_cert`, `private_cert`, `username_password`.
 
 `--resources` ([`SecretResource[]`](#cli-secret-resource-example-schema))
 :   A collection of resources. Required.
@@ -337,11 +337,6 @@ ibmcloud secrets-manager all-secrets [--limit LIMIT] [--offset OFFSET] [--search
 
 `--search` (string)
 :   Filter secrets that contain the specified string. The fields that are searched include: id, name, description, labels, secret_type.
-
-**Usage:** If you want to list only the secrets that contain the string "text", use
-`../secrets/{secret_type}?search=text`.
-
-    The maximum length is `128` characters.
 
 `--sort-by` (string)
 :   Sort a list of secrets by the specified field.
@@ -761,7 +756,7 @@ ibmcloud secrets-manager secret-version-metadata \
 Update the metadata of a secret version, such as `version_custom_metadata`.
 
 ```sh
-ibmcloud secrets-manager secret-version-metadata-update --secret-type SECRET-TYPE --id ID --version-id VERSION-ID --metadata METADATA --resources RESOURCES 
+ibmcloud secrets-manager secret-version-metadata-update --secret-type SECRET-TYPE --id ID --version-id VERSION-ID --resources RESOURCES 
 ```
 
 
