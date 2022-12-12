@@ -61,7 +61,7 @@ keywords: Secrets Manager CLI, Secrets Manager command line, Secrets Manager ter
 You can use the {{site.data.keyword.secrets-manager_full}} command-line interface (CLI) to manage secrets in your {{site.data.keyword.secrets-manager_short}} instance.
 {: shortdesc}
 
-Current version: **`0.2`**
+Current version: **`2.0`**
 
 ## Prerequisites
 {: #secrets-manager-cli-prereq}
