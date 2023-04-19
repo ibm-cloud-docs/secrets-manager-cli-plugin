@@ -1,8 +1,8 @@
 ---
 
 copyright:
-  years: 2022
-lastupdated: "2022-12-12"
+  years: 2023
+lastupdated: "2023-04-19"
 
 subcollection: secrets-manager
 
@@ -39,6 +39,7 @@ keywords: Secrets Manager CLI, Secrets Manager command line, Secrets Manager ter
 {:api: .ph data-hd-interface='api'}
 {:cli: .ph data-hd-interface='cli'}
 {:ui: .ph data-hd-interface='ui'}
+{:terraform: .ph data-hd-interface="terraform"}
 {:curl: .ph data-hd-programlang='curl'}
 {:java: .ph data-hd-programlang='java'}
 {:ruby: .ph data-hd-programlang='ruby'}
@@ -61,7 +62,7 @@ keywords: Secrets Manager CLI, Secrets Manager command line, Secrets Manager ter
 You can use the {{site.data.keyword.secrets-manager_full}} command-line interface (CLI) to manage secrets in your {{site.data.keyword.secrets-manager_short}} instance.
 {: shortdesc}
 
-Current version: **`2.0`**
+Current version: **`2.0.1`**
 
 ## Prerequisites
 {: #secrets-manager-cli-prereq}
