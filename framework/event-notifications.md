@@ -2,7 +2,7 @@
 
 copyright:
   years: 2020, 2023
-lastupdated: "2023-04-11"
+lastupdated: "2023-04-18"
 
 keywords: event notifications for {{site.data.keyword.secrets-manager_short}}, event notifications integration for {{site.data.keyword.secrets-manager_short}}, alerts for {{site.data.keyword.secrets-manager_short}}
 
@@ -200,10 +200,42 @@ You can find the `event_notifications_instance_crn` value in the console by goin
 {: tip}
 
 
+```sh
+curl -X POST 
+   --H "Authorization: Bearer {iam_token}" \
+   --H "Accept: application/json" \
+   --H "Content-Type: application/json" \
+   --d'{
+      "event_notifications_instance_crn": "crn:v1:bluemix:public:event-notifications:us-south:a/22018f3c34ff4ff193698d15ca316946:578ad1a4-2fd8-4e66-95d5-79a842ba91f8::",
+      "event_notifications_source_description": "Optional description of this source in an Event Notifications instance.",
+      "event_notifications_source_name": "My Secrets Manager"
+   }' \
+"https://{instance_ID}.{region}.secrets-manager.appdomain.cloud/api/v2/notifications/registration"
+```
+{: codeblock}
+{: curl}
+
 
 A successful request returns the CRN value of your connected {{site.data.keyword.en_short}} service instance. For more information about the required and optional request parameters, see the [API docs](/apidocs/secrets-manager).
 
 
+### Connecting to {{site.data.keyword.en_short}} with Terraform
+{: #event-notifications-enable-terraform}
+{: terraform}
+
+The following example shows a configuration that you can use to to register your {{site.data.keyword.secrets-manager_short}} source details with {{site.data.keyword.en_short}}.
+
+```terraform
+    resource "ibm_sm_en_registration" "en_registration" {
+        instance_id = local.instance_id
+        region = local.region
+        name = "test-root-ca"
+        event_notifications_instance_crn = var.en_instance_crn
+        event_notifications_source_description = "My event notification source"
+        event_notifications_source_name = "my_en_source"
+    }
+```
+{: codeblock}
 
 
 ### Sending a test event to {{site.data.keyword.en_short}} in the UI
@@ -235,6 +267,13 @@ The following example shows a query that you can use to send a test event from t
 {: curl}
 
 
+```sh
+curl -X GET 
+   --H "Authorization: Bearer {iam_token}" \
+   "https://{instance_ID}.{region}.secrets-manager.appdomain.cloud/api/v2/notifications/registration/test"
+```
+{: codeblock}
+{: curl}
 
 A successful request returns an HTTP `200 OK` response to indicate that a test event was forwarded successfully to your connected {{site.data.keyword.en_short}} service instance. For more information, see the [API docs](/apidocs/secrets-manager).
 
