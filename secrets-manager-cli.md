@@ -249,17 +249,12 @@ Use this method to either generate or import an existing secret, such as an arbi
 To learn more about the types of secrets that you can create with Secrets Manager, check out the [docs](/docs/secrets-manager?topic=secrets-manager-what-is-secret).
 
 ```sh
-ibmcloud secrets-manager secret-create --secret-type SECRET-TYPE --resources RESOURCES 
+ibmcloud secrets-manager secret-create --resources RESOURCES 
 ```
 
 
 #### Command options
 {: #secrets-manager-secret-create-cli-options}
-
-`--secret-type` (string)
-:   The secret type. Required.
-
-    Allowable values are: `arbitrary`, `kv`, `iam_credentials`, `imported_cert`, `public_cert`, `private_cert`, `username_password`.
 
 `--resources` ([`SecretResource[]`](#cli-secret-resource-example-schema))
 :   A collection of resources. Required.
@@ -269,7 +264,6 @@ ibmcloud secrets-manager secret-create --secret-type SECRET-TYPE --resources RES
 
 ```sh
 ibmcloud secrets-manager secret-create \
-    --secret-type=arbitrary \
     --resources='[{"name": "example-arbitrary-secret", "description": "Extended description for this secret.", "secret_group_id": "bc656587-8fda-4d05-9ad8-b1de1ec7e712", "labels": ["dev","us-south"], "custom_metadata": {"anyKey": "anyValue"}, "version_custom_metadata": {"anyKey": "anyValue"}, "expiration_date": "2030-01-01T00:00:00Z", "payload": "secret-data"}]'
 ```
 {: pre}
@@ -280,17 +274,12 @@ ibmcloud secrets-manager secret-create \
 List the secrets in your Secrets Manager instance based on the type that you specify.
 
 ```sh
-ibmcloud secrets-manager secrets --secret-type SECRET-TYPE [--limit LIMIT] [--offset OFFSET] 
+ibmcloud secrets-manager secrets [--limit LIMIT] [--offset OFFSET] 
 ```
 
 
 #### Command options
 {: #secrets-manager-secrets-cli-options}
-
-`--secret-type` (string)
-:   The secret type. Required.
-
-    Allowable values are: `arbitrary`, `iam_credentials`, `imported_cert`, `public_cert`, `private_cert`, `username_password`, `kv`.
 
 `--limit` (int64)
 :   The number of secrets to retrieve. By default, list operations return the first 200 items. To retrieve a different set of items, use `limit` with `offset` to page through your available resources.
@@ -307,7 +296,6 @@ ibmcloud secrets-manager secrets --secret-type SECRET-TYPE [--limit LIMIT] [--of
 
 ```sh
 ibmcloud secrets-manager secrets \
-    --secret-type=arbitrary \
     --limit=1 \
     --offset=0
 ```
@@ -377,17 +365,12 @@ Get a secret and its details by specifying the ID of the secret.
 A successful request returns the secret data that is associated with your secret, along with other metadata. To view only the details of a specified secret without retrieving its value, use the [Get secret metadata](#secrets-manager-cli-secret-metadata-command) method.
 
 ```sh
-ibmcloud secrets-manager secret --secret-type SECRET-TYPE --id ID 
+ibmcloud secrets-manager secret --id ID 
 ```
 
 
 #### Command options
-{: #secrets-manager-secret-cli-options}
-
-`--secret-type` (string)
-:   The secret type. Required.
-
-    Allowable values are: `arbitrary`, `iam_credentials`, `imported_cert`, `public_cert`, `private_cert`, `username_password`, `kv`.
+{: #secrets-manager-secret-cli-options}\
 
 `--id` (string)
 :   The v4 UUID that uniquely identifies the secret. Required.
@@ -399,7 +382,6 @@ ibmcloud secrets-manager secret --secret-type SECRET-TYPE --id ID
 
 ```sh
 ibmcloud secrets-manager secret \
-    --secret-type=arbitrary \
     --id=exampleString
 ```
 {: pre}
@@ -415,17 +397,12 @@ Invoke an action on a specified secret. This method supports the following actio
 - `delete_credentials`: Delete the API key that is associated with an `iam_credentials` secret.
 - `validate_dns_challenge`: Validate challenges for public certificates that are ordered with a manual dns provider.
 ```sh
-ibmcloud secrets-manager secret-update --secret-type SECRET-TYPE --id ID --action ACTION [--body BODY] 
+ibmcloud secrets-manager secret-update --id ID --action ACTION [--body BODY] 
 ```
 
 
 #### Command options
 {: #secrets-manager-secret-update-cli-options}
-
-`--secret-type` (string)
-:   The secret type. Required.
-
-    Allowable values are: `arbitrary`, `iam_credentials`, `imported_cert`, `public_cert`, `private_cert`, `username_password`, `kv`.
 
 `--id` (string)
 :   The v4 UUID that uniquely identifies the secret. Required.
@@ -445,7 +422,6 @@ ibmcloud secrets-manager secret-update --secret-type SECRET-TYPE --id ID --actio
 
 ```sh
 ibmcloud secrets-manager secret-update \
-    --secret-type=arbitrary \
     --id=exampleString \
     --action=rotate \
     --body='{"payload": "exampleString", "custom_metadata": {"anyKey": "anyValue"}, "version_custom_metadata": {"anyKey": "anyValue"}}'
@@ -458,17 +434,12 @@ ibmcloud secrets-manager secret-update \
 Delete a secret by specifying the ID of the secret.
 
 ```sh
-ibmcloud secrets-manager secret-delete --secret-type SECRET-TYPE --id ID [--force]
+ibmcloud secrets-manager secret-delete --id ID [--force]
 ```
 
 
 #### Command options
 {: #secrets-manager-secret-delete-cli-options}
-
-`--secret-type` (string)
-:   The secret type. Required.
-
-    Allowable values are: `arbitrary`, `iam_credentials`, `imported_cert`, `public_cert`, `private_cert`, `username_password`, `kv`.
 
 `--id` (string)
 :   The v4 UUID that uniquely identifies the secret. Required.
@@ -483,7 +454,6 @@ ibmcloud secrets-manager secret-delete --secret-type SECRET-TYPE --id ID [--forc
 
 ```sh
 ibmcloud secrets-manager secret-delete \
-    --secret-type=arbitrary \
     --id=exampleString
 ```
 {: pre}
@@ -496,17 +466,12 @@ List the versions of a secret.
 A successful request returns the list of the versions along with the metadata of each version.
 
 ```sh
-ibmcloud secrets-manager secret-versions --secret-type SECRET-TYPE --id ID 
+ibmcloud secrets-manager secret-versions --id ID 
 ```
 
 
 #### Command options
 {: #secrets-manager-secret-versions-cli-options}
-
-`--secret-type` (string)
-:   The secret type. Required.
-
-    Allowable values are: `arbitrary`, `iam_credentials`, `imported_cert`, `public_cert`, `private_cert`, `username_password`, `kv`.
 
 `--id` (string)
 :   The v4 UUID that uniquely identifies the secret. Required.
@@ -518,7 +483,6 @@ ibmcloud secrets-manager secret-versions --secret-type SECRET-TYPE --id ID
 
 ```sh
 ibmcloud secrets-manager secret-versions \
-    --secret-type=arbitrary \
     --id=exampleString
 ```
 {: pre}
@@ -531,17 +495,12 @@ Get a version of a secret by specifying the ID of the version or the alias `prev
 A successful request returns the secret data that is associated with the specified version of your secret, along with other metadata.
 
 ```sh
-ibmcloud secrets-manager secret-version --secret-type SECRET-TYPE --id ID --version-id VERSION-ID 
+ibmcloud secrets-manager secret-version --id ID --version-id VERSION-ID 
 ```
 
 
 #### Command options
 {: #secrets-manager-secret-version-cli-options}
-
-`--secret-type` (string)
-:   The secret type. Required.
-
-    Allowable values are: `arbitrary`, `iam_credentials`, `imported_cert`, `public_cert`, `private_cert`, `username_password`, `kv`.
 
 `--id` (string)
 :   The v4 UUID that uniquely identifies the secret. Required.
@@ -561,7 +520,6 @@ The value must match regular expression `/^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-
 
 ```sh
 ibmcloud secrets-manager secret-version \
-    --secret-type=arbitrary \
     --id=exampleString \
     --version-id=exampleString
 ```
@@ -575,17 +533,12 @@ Invoke an action on a specified version of a secret. This method supports the fo
 - `revoke`: Revoke a version of a private certificate.
 
 ```sh
-ibmcloud secrets-manager secret-version-update --secret-type SECRET-TYPE --id ID --version-id VERSION-ID --action ACTION 
+ibmcloud secrets-manager secret-version-update --id ID --version-id VERSION-ID --action ACTION 
 ```
 
 
 #### Command options
 {: #secrets-manager-secret-version-update-cli-options}
-
-`--secret-type` (string)
-:   The secret type. Required.
-
-    Allowable values are: `private_cert`.
 
 `--id` (string)
 :   The v4 UUID that uniquely identifies the secret. Required.
@@ -610,7 +563,6 @@ The value must match regular expression `/^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-
 
 ```sh
 ibmcloud secrets-manager secret-version-update \
-    --secret-type=private_cert \
     --id=exampleString \
     --version-id=exampleString \
     --action=revoke
@@ -715,17 +667,12 @@ Get the metadata of a secret version by specifying the ID of the version or the 
 A successful request returns the metadata that is associated with the specified version of your secret.
 
 ```sh
-ibmcloud secrets-manager secret-version-metadata --secret-type SECRET-TYPE --id ID --version-id VERSION-ID 
+ibmcloud secrets-manager secret-version-metadata --id ID --version-id VERSION-ID 
 ```
 
 
 #### Command options
 {: #secrets-manager-secret-version-metadata-cli-options}
-
-`--secret-type` (string)
-:   The secret type. Required.
-
-    Allowable values are: `arbitrary`, `iam_credentials`, `imported_cert`, `public_cert`, `private_cert`, `username_password`, `kv`.
 
 `--id` (string)
 :   The v4 UUID that uniquely identifies the secret. Required.
@@ -745,7 +692,6 @@ To find the version ID of a secret, use the [Get secret metadata](#secrets-manag
 
 ```sh
 ibmcloud secrets-manager secret-version-metadata \
-    --secret-type=arbitrary \
     --id=exampleString \
     --version-id=exampleString
 ```
@@ -757,17 +703,12 @@ ibmcloud secrets-manager secret-version-metadata \
 Update the metadata of a secret version, such as `version_custom_metadata`.
 
 ```sh
-ibmcloud secrets-manager secret-version-metadata-update --secret-type SECRET-TYPE --id ID --version-id VERSION-ID --resources RESOURCES 
+ibmcloud secrets-manager secret-version-metadata-update --id ID --version-id VERSION-ID --resources RESOURCES 
 ```
 
 
 #### Command options
 {: #secrets-manager-secret-version-metadata-update-cli-options}
-
-`--secret-type` (string)
-:   The secret type. Required.
-
-    Allowable values are: `arbitrary`, `iam_credentials`, `imported_cert`, `public_cert`, `private_cert`, `username_password`, `kv`.
 
 `--id` (string)
 :   The v4 UUID that uniquely identifies the secret. Required.
@@ -793,7 +734,6 @@ The value must match regular expression `/^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-
 
 ```sh
 ibmcloud secrets-manager secret-version-metadata-update \
-    --secret-type=arbitrary \
     --id=exampleString \
     --version-id=exampleString \
     --metadata='{"collection_type": "application/vnd.ibm.secrets-manager.secret+json", "collection_total": 1}' \
@@ -810,17 +750,12 @@ Get the details of a secret by specifying its ID.
 A successful request returns only metadata about the secret, such as its name and creation date. To retrieve the value of a secret, use the [Get a secret](#secrets-manager-cli-secret-command) or [Get a version of a secret](#secrets-manager-cli-secret-version-command) methods.
 
 ```sh
-ibmcloud secrets-manager secret-metadata --secret-type SECRET-TYPE --id ID 
+ibmcloud secrets-manager secret-metadata --id ID 
 ```
 
 
 #### Command options
 {: #secrets-manager-secret-metadata-cli-options}
-
-`--secret-type` (string)
-:   The secret type. Required.
-
-    Allowable values are: `arbitrary`, `iam_credentials`, `imported_cert`, `public_cert`, `private_cert`, `username_password`, `kv`.
 
 `--id` (string)
 :   The v4 UUID that uniquely identifies the secret. Required.
@@ -832,7 +767,6 @@ ibmcloud secrets-manager secret-metadata --secret-type SECRET-TYPE --id ID
 
 ```sh
 ibmcloud secrets-manager secret-metadata \
-    --secret-type=arbitrary \
     --id=exampleString
 ```
 {: pre}
@@ -845,17 +779,12 @@ Update the metadata of a secret, such as its name or description.
 To update the actual contents of a secret, rotate the secret by using the [Invoke an action on a secret](#secrets-manager-cli-secret-update-command) method.
 
 ```sh
-ibmcloud secrets-manager secret-metadata-update --secret-type SECRET-TYPE --id ID --resources RESOURCES 
+ibmcloud secrets-manager secret-metadata-update --id ID --resources RESOURCES 
 ```
 
 
 #### Command options
 {: #secrets-manager-secret-metadata-update-cli-options}
-
-`--secret-type` (string)
-:   The secret type. Required.
-
-    Allowable values are: `arbitrary`, `iam_credentials`, `imported_cert`, `public_cert`, `private_cert`, `username_password`, `kv`.
 
 `--id` (string)
 :   The v4 UUID that uniquely identifies the secret. Required.
@@ -870,7 +799,6 @@ ibmcloud secrets-manager secret-metadata-update --secret-type SECRET-TYPE --id I
 
 ```sh
 ibmcloud secrets-manager secret-metadata-update \
-    --secret-type=arbitrary \
     --id=exampleString \
     --resources='[{"labels": ["dev","us-south"], "name": "updated-secret-name", "description": "Updated description for this secret.", "custom_metadata": {"anyKey": "anyValue"}, "expiration_date": "2030-04-01T09:30:00Z"}]'
 ```
@@ -887,17 +815,12 @@ Secure your secret data by attaching a lock to a secret version and preventing a
 List the locks that are associated with a specified secret.
 
 ```sh
-ibmcloud secrets-manager locks --secret-type SECRET-TYPE --id ID [--limit LIMIT] [--offset OFFSET] [--search SEARCH] 
+ibmcloud secrets-manager locks --id ID [--limit LIMIT] [--offset OFFSET] [--search SEARCH] 
 ```
 
 
 #### Command options
 {: #secrets-manager-locks-cli-options}
-
-`--secret-type` (string)
-:   The secret type. Required.
-
-    Allowable values are: `arbitrary`, `iam_credentials`, `imported_cert`, `public_cert`, `private_cert`, `username_password`, `kv`.
 
 `--id` (string)
 :   The v4 UUID that uniquely identifies the secret. Required.
@@ -926,7 +849,6 @@ ibmcloud secrets-manager locks --secret-type SECRET-TYPE --id ID [--limit LIMIT]
 
 ```sh
 ibmcloud secrets-manager locks \
-    --secret-type=arbitrary \
     --id=exampleString \
     --limit=1 \
     --offset=0 \
@@ -989,17 +911,12 @@ A lock can be used to prevent a secret from being deleted or modified while it's
 For more information about locking secrets, check out the [docs](/docs/secrets-manager?topic=secrets-manager-secret-locks).
 
 ```sh
-ibmcloud secrets-manager secret-lock --secret-type SECRET-TYPE --id ID [--locks LOCKS] [--mode MODE] 
+ibmcloud secrets-manager secret-lock --id ID [--locks LOCKS] [--mode MODE] 
 ```
 
 
 #### Command options
 {: #secrets-manager-secret-lock-cli-options}
-
-`--secret-type` (string)
-:   The secret type. Required.
-
-    Allowable values are: `arbitrary`, `iam_credentials`, `imported_cert`, `public_cert`, `private_cert`, `username_password`, `kv`.
 
 `--id` (string)
 :   The v4 UUID that uniquely identifies the secret. Required.
@@ -1022,7 +939,6 @@ ibmcloud secrets-manager secret-lock --secret-type SECRET-TYPE --id ID [--locks 
 
 ```sh
 ibmcloud secrets-manager secret-lock \
-    --secret-type=arbitrary \
     --id=exampleString \
     --locks='[{"name": "lock-1", "description": "lock for consumer-1", "attributes": {"anyKey": "anyValue"}}]' \
     --mode=exclusive
@@ -1040,17 +956,12 @@ A secret is considered unlocked and able to be revoked or deleted only after all
 {: note}
 
 ```sh
-ibmcloud secrets-manager secret-unlock --secret-type SECRET-TYPE --id ID [--locks LOCKS] 
+ibmcloud secrets-manager secret-unlock --id ID [--locks LOCKS] 
 ```
 
 
 #### Command options
 {: #secrets-manager-secret-unlock-cli-options}
-
-`--secret-type` (string)
-:   The secret type. Required.
-
-    Allowable values are: `arbitrary`, `iam_credentials`, `imported_cert`, `public_cert`, `private_cert`, `username_password`, `kv`.
 
 `--id` (string)
 :   The v4 UUID that uniquely identifies the secret. Required.
@@ -1067,7 +978,6 @@ ibmcloud secrets-manager secret-unlock --secret-type SECRET-TYPE --id ID [--lock
 
 ```sh
 ibmcloud secrets-manager secret-unlock \
-    --secret-type=arbitrary \
     --id=exampleString \
     --locks=exampleString
 ```
@@ -1079,17 +989,12 @@ ibmcloud secrets-manager secret-unlock \
 List the locks that are associated with a specified secret version.
 
 ```sh
-ibmcloud secrets-manager secret-version-locks --secret-type SECRET-TYPE --id ID --version-id VERSION-ID [--limit LIMIT] [--offset OFFSET] [--search SEARCH] 
+ibmcloud secrets-manager secret-version-locks --id ID --version-id VERSION-ID [--limit LIMIT] [--offset OFFSET] [--search SEARCH] 
 ```
 
 
 #### Command options
 {: #secrets-manager-secret-version-locks-cli-options}
-
-`--secret-type` (string)
-:   The secret type. Required.
-
-    Allowable values are: `arbitrary`, `iam_credentials`, `imported_cert`, `public_cert`, `private_cert`, `username_password`, `kv`.
 
 `--id` (string)
 :   The v4 UUID that uniquely identifies the secret. Required.
@@ -1127,7 +1032,6 @@ To find the version ID of a secret, use the [Get secret metadata](#secrets-manag
 
 ```sh
 ibmcloud secrets-manager secret-version-locks \
-    --secret-type=arbitrary \
     --id=exampleString \
     --version-id=exampleString \
     --limit=1 \
@@ -1191,17 +1095,12 @@ A lock can be used to prevent a secret from being deleted or modified while it's
 For more information about locking secrets, check out the [docs](/docs/secrets-manager?topic=secrets-manager-secret-locks).
 
 ```sh
-ibmcloud secrets-manager secret-version-lock --secret-type SECRET-TYPE --id ID --version-id VERSION-ID [--locks LOCKS] [--mode MODE] 
+ibmcloud secrets-manager secret-version-lock --id ID --version-id VERSION-ID [--locks LOCKS] [--mode MODE] 
 ```
 
 
 #### Command options
 {: #secrets-manager-secret-version-lock-cli-options}
-
-`--secret-type` (string)
-:   The secret type. Required.
-
-    Allowable values are: `arbitrary`, `iam_credentials`, `imported_cert`, `public_cert`, `private_cert`, `username_password`, `kv`.
 
 `--id` (string)
 :   The v4 UUID that uniquely identifies the secret. Required.
@@ -1225,8 +1124,8 @@ ibmcloud secrets-manager secret-version-lock --secret-type SECRET-TYPE --id ID -
 When you are locking the `previous` version, the mode parameter is ignored.
 {: note}
 
-- `exclusive`: Removes any other locks with matching names if they are found in the previous version of the secret.
-- `exclusive_delete`: Same as `exclusive`, but also permanently deletes the data of the previous secret version if it doesn't have any locks.
+- `remove_previous`: Removes any other locks with matching names if they are found in the previous version of the secret.
+- `remove_previous_and_delete`: Carries out the same function as remove_previous, but also permanently deletes the data of the previous secret version if it doesn't have any locks.
 
     Allowable values are: `exclusive`, `exclusive_delete`.
 
@@ -1235,7 +1134,6 @@ When you are locking the `previous` version, the mode parameter is ignored.
 
 ```sh
 ibmcloud secrets-manager secret-version-lock \
-    --secret-type=arbitrary \
     --id=exampleString \
     --version-id=exampleString \
     --locks='[{"name": "lock-1", "description": "lock for consumer-1", "attributes": {"anyKey": "anyValue"}}]' \
@@ -1255,17 +1153,12 @@ A secret is considered unlocked and able to be revoked or deleted only after all
 {: note}
 
 ```sh
-ibmcloud secrets-manager secret-version-unlock --secret-type SECRET-TYPE --id ID --version-id VERSION-ID [--locks LOCKS] 
+ibmcloud secrets-manager secret-version-unlock --id ID --version-id VERSION-ID [--locks LOCKS] 
 ```
 
 
 #### Command options
 {: #secrets-manager-secret-version-unlock-cli-options}
-
-`--secret-type` (string)
-:   The secret type. Required.
-
-    Allowable values are: `arbitrary`, `iam_credentials`, `imported_cert`, `public_cert`, `private_cert`, `username_password`, `kv`.
 
 `--id` (string)
 :   The v4 UUID that uniquely identifies the secret. Required.
@@ -1290,7 +1183,6 @@ To find the version ID of a secret, use the [Get secret metadata](#secrets-manag
 
 ```sh
 ibmcloud secrets-manager secret-version-unlock \
-    --secret-type=arbitrary \
     --id=exampleString \
     --version-id=exampleString \
     --locks=exampleString
@@ -1356,17 +1248,12 @@ Define rotation policies for secrets.
 Create or update one or more policies, such as an [automatic rotation policy](/docs/secrets-manager?topic=secrets-manager-automatic-rotation), for the specified secret.
 
 ```sh
-ibmcloud secrets-manager policy-update --secret-type SECRET-TYPE --id ID --resources RESOURCES [--policy POLICY] 
+ibmcloud secrets-manager policy-update  --id ID --resources RESOURCES [--policy POLICY] 
 ```
 
 
 #### Command options
 {: #secrets-manager-policy-update-cli-options}
-
-`--secret-type` (string)
-:   The secret type. Required.
-
-    Allowable values are: `username_password`, `iam_credentials`,`public_cert`, `private_cert`.
 
 `--id` (string)
 :   The v4 UUID that uniquely identifies the secret. Required.
@@ -1386,7 +1273,6 @@ ibmcloud secrets-manager policy-update --secret-type SECRET-TYPE --id ID --resou
 
 ```sh
 ibmcloud secrets-manager policy-update \
-    --secret-type=username_password \
     --id=exampleString \
     --resources='[{"type": "application/vnd.ibm.secrets-manager.secret.policy+json", "rotation": {"interval": 1, "unit": "day"}}]' \
     --policy=rotation
@@ -1399,17 +1285,12 @@ ibmcloud secrets-manager policy-update \
 List the rotation policies that are associated with a specified secret.
 
 ```sh
-ibmcloud secrets-manager policy --secret-type SECRET-TYPE --id ID [--policy POLICY] 
+ibmcloud secrets-manager policy --id ID [--policy POLICY] 
 ```
 
 
 #### Command options
 {: #secrets-manager-policy-cli-options}
-
-`--secret-type` (string)
-:   The secret type. Required.
-
-    Allowable values are: `username_password`, `public_cert`, `private_cert`.
 
 `--id` (string)
 :   The v4 UUID that uniquely identifies the secret. Required.
@@ -1426,7 +1307,6 @@ ibmcloud secrets-manager policy --secret-type SECRET-TYPE --id ID [--policy POLI
 
 ```sh
 ibmcloud secrets-manager policy \
-    --secret-type=username_password \
     --id=exampleString \
     --policy=rotation
 ```
@@ -1445,17 +1325,12 @@ Set the configuration for the specified secret type.
 Use this method to configure the IAM credentials (`iam_credentials`) engine for your service instance. Looking to order or generate certificates? To configure the public certificates (`public_cert`) or private certificates (`private_cert`) engines, use the [Add a configuration](#secrets-manager-cli-config-element-create-command) method.
 
 ```sh
-ibmcloud secrets-manager config-update --secret-type SECRET-TYPE --engine-config ENGINE-CONFIG 
+ibmcloud secrets-manager config-update --engine-config ENGINE-CONFIG 
 ```
 
 
 #### Command options
 {: #secrets-manager-config-update-cli-options}
-
-`--secret-type` (string)
-:   The secret type. Required.
-
-    Allowable values are: `iam_credentials`.
 
 `--engine-config` ([`EngineConfig`](#cli-engine-config-example-schema))
 :   Properties to update for a secrets engine. Required.
@@ -1465,7 +1340,6 @@ ibmcloud secrets-manager config-update --secret-type SECRET-TYPE --engine-config
 
 ```sh
 ibmcloud secrets-manager config-update \
-    --secret-type=iam_credentials \
     --engine-config='{"api_key": "API_KEY"}'
 ```
 {: pre}
@@ -1476,24 +1350,14 @@ ibmcloud secrets-manager config-update \
 Get the configuration that is associated with the specified secret type.
 
 ```sh
-ibmcloud secrets-manager config --secret-type SECRET-TYPE 
+ibmcloud secrets-manager config
 ```
-
-
-#### Command options
-{: #secrets-manager-config-cli-options}
-
-`--secret-type` (string)
-:   The secret type. Required.
-
-    Allowable values are: `iam_credentials`, `public_cert`, `private_cert`.
 
 #### Examples
 {: #secrets-manager-cli-config-command-examples}
 
 ```sh
 ibmcloud secrets-manager config \
-    --secret-type=iam_credentials
 ```
 {: pre}
 
@@ -1513,17 +1377,12 @@ You can add multiple configurations for your instance as follows:
 - Up to 10 certificate templates.
 
 ```sh
-ibmcloud secrets-manager config-element-create --secret-type SECRET-TYPE --config-element CONFIG-ELEMENT --name NAME --type TYPE --config CONFIG 
+ibmcloud secrets-manager config-element-create --config-element CONFIG-ELEMENT --name NAME --type TYPE --config CONFIG 
 ```
 
 
 #### Command options
 {: #secrets-manager-config-element-create-cli-options}
-
-`--secret-type` (string)
-:   The secret type. Required.
-
-    Allowable values are: `public_cert`, `private_cert`.
 
 `--config-element` (string)
 :   The configuration element to define or manage. Required.
@@ -1548,7 +1407,6 @@ ibmcloud secrets-manager config-element-create --secret-type SECRET-TYPE --confi
 
 ```sh
 ibmcloud secrets-manager config-element-create \
-    --secret-type=public_cert \
     --config-element=certificate_authorities \
     --name=cis-example-config \
     --type=cis \
@@ -1562,17 +1420,12 @@ ibmcloud secrets-manager config-element-create \
 List the configuration elements that are associated with a specified secret type.
 
 ```sh
-ibmcloud secrets-manager config-elements --secret-type SECRET-TYPE --config-element CONFIG-ELEMENT 
+ibmcloud secrets-manager config-elements --config-element CONFIG-ELEMENT 
 ```
 
 
 #### Command options
 {: #secrets-manager-config-elements-cli-options}
-
-`--secret-type` (string)
-:   The secret type. Required.
-
-    Allowable values are: `public_cert`, `private_cert`.
 
 `--config-element` (string)
 :   The configuration element to define or manage. Required.
@@ -1584,7 +1437,6 @@ ibmcloud secrets-manager config-elements --secret-type SECRET-TYPE --config-elem
 
 ```sh
 ibmcloud secrets-manager config-elements \
-    --secret-type=public_cert \
     --config-element=certificate_authorities
 ```
 {: pre}
@@ -1595,17 +1447,12 @@ ibmcloud secrets-manager config-elements \
 Get the details of a specific configuration that is associated with a secret type.
 
 ```sh
-ibmcloud secrets-manager config-element --secret-type SECRET-TYPE --config-element CONFIG-ELEMENT --config-name CONFIG-NAME 
+ibmcloud secrets-manager config-element --config-element CONFIG-ELEMENT --config-name CONFIG-NAME 
 ```
 
 
 #### Command options
 {: #secrets-manager-config-element-cli-options}
-
-`--secret-type` (string)
-:   The secret type. Required.
-
-    Allowable values are: `public_cert`, `private_cert`.
 
 `--config-element` (string)
 :   The configuration element to define or manage. Required.
@@ -1620,7 +1467,6 @@ ibmcloud secrets-manager config-element --secret-type SECRET-TYPE --config-eleme
 
 ```sh
 ibmcloud secrets-manager config-element \
-    --secret-type=public_cert \
     --config-element=certificate_authorities \
     --config-name=exampleString
 ```
@@ -1632,17 +1478,12 @@ ibmcloud secrets-manager config-element \
 Update a configuration element that is associated with the specified secret type.
 
 ```sh
-ibmcloud secrets-manager config-element-update --secret-type SECRET-TYPE --config-element CONFIG-ELEMENT --config-name CONFIG-NAME --type TYPE --config CONFIG 
+ibmcloud secrets-manager config-element-update --config-element CONFIG-ELEMENT --config-name CONFIG-NAME --type TYPE --config CONFIG 
 ```
 
 
 #### Command options
 {: #secrets-manager-config-element-update-cli-options}
-
-`--secret-type` (string)
-:   The secret type. Required.
-
-    Allowable values are: `public_cert`, `private_cert`.
 
 `--config-element` (string)
 :   The configuration element to define or manage. Required.
@@ -1665,7 +1506,6 @@ ibmcloud secrets-manager config-element-update --secret-type SECRET-TYPE --confi
 
 ```sh
 ibmcloud secrets-manager config-element-update \
-    --secret-type=public_cert \
     --config-element=certificate_authorities \
     --config-name=exampleString \
     --type=cis \
@@ -1685,17 +1525,12 @@ Invoke an action on a specified configuration element. This method supports the 
 - `rotate_crl`: Rotate the certificate revocation list (CRL) of an intermediate certificate authority.
 
 ```sh
-ibmcloud secrets-manager config-element-action --secret-type SECRET-TYPE --config-element CONFIG-ELEMENT --config-name CONFIG-NAME --action ACTION [--config CONFIG] 
+ibmcloud secrets-manager config-element-action --config-element CONFIG-ELEMENT --config-name CONFIG-NAME --action ACTION [--config CONFIG] 
 ```
 
 
 #### Command options
 {: #secrets-manager-config-element-action-cli-options}
-
-`--secret-type` (string)
-:   The secret type. Required.
-
-    Allowable values are: `private_cert`.
 
 `--config-element` (string)
 :   The configuration element on which the action is applied. Required.
@@ -1718,7 +1553,6 @@ ibmcloud secrets-manager config-element-action --secret-type SECRET-TYPE --confi
 
 ```sh
 ibmcloud secrets-manager config-element-action \
-    --secret-type=private_cert \
     --config-element=root_certificate_authorities \
     --config-name=exampleString \
     --action=sign_intermediate \
@@ -1732,17 +1566,12 @@ ibmcloud secrets-manager config-element-action \
 Delete a configuration element from the specified secret type.
 
 ```sh
-ibmcloud secrets-manager config-element-delete --secret-type SECRET-TYPE --config-element CONFIG-ELEMENT --config-name CONFIG-NAME 
+ibmcloud secrets-manager config-element-delete --config-element CONFIG-ELEMENT --config-name CONFIG-NAME 
 ```
 
 
 #### Command options
 {: #secrets-manager-config-element-delete-cli-options}
-
-`--secret-type` (string)
-:   The secret type. Required.
-
-    Allowable values are: `public_cert`, `private_cert`.
 
 `--config-element` (string)
 :   The configuration element to define or manage. Required.
@@ -1757,7 +1586,6 @@ ibmcloud secrets-manager config-element-delete --secret-type SECRET-TYPE --confi
 
 ```sh
 ibmcloud secrets-manager config-element-delete \
-    --secret-type=public_cert \
     --config-element=certificate_authorities \
     --config-name=exampleString
 ```
