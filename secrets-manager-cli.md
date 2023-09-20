@@ -2,7 +2,7 @@
 
 copyright:
   years: 2023
-lastupdated: "2023-04-19"
+lastupdated: "2023-09-20"
 
 subcollection: secrets-manager
 
@@ -62,7 +62,7 @@ keywords: Secrets Manager CLI, Secrets Manager command line, Secrets Manager ter
 You can use the {{site.data.keyword.secrets-manager_full}} command-line interface (CLI) to manage secrets in your {{site.data.keyword.secrets-manager_short}} instance.
 {: shortdesc}
 
-Current version: **`2.0.1`**
+Current version: **`2.0.2`**
 
 ## Prerequisites
 {: #secrets-manager-cli-prereq}
@@ -78,22 +78,56 @@ Current version: **`2.0.1`**
     You're notified on the command line when updates to the {{site.data.keyword.cloud_notm}} CLI and plug-ins are available. Be sure to keep your CLI up to date so that you can use the latest commands. You can view the current version of all installed plug-ins by running `ibmcloud plugin list`.
     {: tip}
 
-* Export an environment variable with your {{site.data.keyword.secrets-manager_short}} service endpoint URL.
+* To target the {{site.data.keyword.secrets-manager_short}} instance, use one of the following options.
 
-    To target an instance for operations, export the following variable.
-    ```sh
-    export SECRETS_MANAGER_URL=https://{instance_ID}.{region}.secrets-manager.appdomain.cloud
-    ```
-    {: pre}
+  * Run the `ibmcloud secrets-manager config set` command.
+
+      ```sh
+       ibmcloud secrets-manager config set service-url https://{instance_ID}.{region}.secrets-manager.appdomain.cloud
+      ```
+      {: pre}
+
+
+  * Export an environment variable with your {{site.data.keyword.secrets-manager_short}} service endpoint URL.
+
+      ```sh
+      export SECRETS_MANAGER_URL=https://{instance_ID}.{region}.secrets-manager.appdomain.cloud
+      ```
+      {: pre}
+
+  * Set the service endpoint in the command.
+
+      ```sh
+      ibmcloud secrets-manager secrets --service-url https://{instance_ID}.{region}.secrets-manager.appdomain.cloud
+      ```
+      {: pre}
 
     Replace `{instance_ID}` and `{region}` with the values that apply to your {{site.data.keyword.secrets-manager_short}} service instance. To find the endpoint URL that is specific to your instance, you can copy it from the **Endpoints** page in the {{site.data.keyword.secrets-manager_short}} UI. For more information, see [Viewing your endpoint URLs](/docs/secrets-manager?topic=secrets-manager-endpoints#view-endpoint-urls)
 
-    Need to override the URL? You can also specify the endpoint at the command-level by using the `--service-url INSTANCE` flag. For example, `ibmcloud secrets-manager secrets --service-url https://{instance_ID}.{region}.secrets-manager.appdomain.cloud`.
-    {: tip}
 
 
 
 ## Globals
+
+### Commands
+
+#### `ibmcloud secrets-manager docs`
+{: #secrets-manager-cli-docs-command}
+
+Opens the plugin documentation in the web browser.
+
+```sh
+ibmcloud secrets-manager docs
+```
+
+##### Example
+{: #secrets-manager-docs-examples}
+
+```sh
+ibmcloud secrets-manager docs
+```
+{: pre}
+
 ### Options
 {: #secrets-manager-global-options}
 
@@ -117,6 +151,7 @@ Current version: **`2.0.1`**
 
 #### Example
 {: #secrets-manager-global-options-example}
+
 ```sh
 ibmcloud secrets-manager
     --instance-id=provide-here-your-smgr-instanceuuid \
@@ -203,8 +238,6 @@ ibmcloud secrets-manager config list
 ```sh
 ibmcloud secrets-manager config list
 ```
-{: pre}
-
 
 ## Secret groups
 {: #secrets-manager-secret-groups-cli}
@@ -229,12 +262,10 @@ ibmcloud secrets-manager secret-group-create --name NAME [--description DESCRIPT
 `--name` (string)
 :   The name of your secret group. Required.
 
-    The maximum length is `64` characters. The minimum length is `2` characters. The value must match regular expression `/^[A-Za-z0-9][A-Za-z0-9]*(?:_*-*\\.*[A-Za-z0-9]+)*$/`.
+    The maximum length is `64` characters. The minimum length is `2` characters. The value must match regular expression `/^[A-Za-z0-9_][A-Za-z0-9_]*(?:_*-*\\.*[A-Za-z0-9]*)*[A-Za-z0-9]+$/`.
 
 `--description` (string)
 :   An extended description of your secret group.
-
-To protect your privacy, do not use personal data, such as your name or location, as a description for your secret group.
 
     The maximum length is `1024` characters. The minimum length is `0` characters. The value must match regular expression `/(.*?)/`.
 
@@ -243,8 +274,8 @@ To protect your privacy, do not use personal data, such as your name or location
 
 ```sh
 ibmcloud secrets-manager secret-group-create \
-    --name=my-secret-group \
-    --description='Extended description for this group.'
+    --name my-secret-group \
+    --description 'Extended description for this group.'
 ```
 {: pre}
 
@@ -323,14 +354,14 @@ Example `SecretGroup` collection response
 Get the properties of an existing secret group by specifying the ID of the group.
 
 ```sh
-ibmcloud secrets-manager secret-group --id ID
+ibmcloud secrets-manager secret-group --secret-group-id SECRET-GROUP-ID
 ```
 
 
 #### Command options
 {: #secrets-manager-secret-group-cli-options}
 
-`--id` (string)
+`--secret-group-id` (string)
 :   The ID of the secret group. Required.
 
     The maximum length is `36` characters. The minimum length is `7` characters. The value must match regular expression `/^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|default)$/`.
@@ -340,7 +371,7 @@ ibmcloud secrets-manager secret-group --id ID
 
 ```sh
 ibmcloud secrets-manager secret-group \
-    --id=d898bb90-82f6-4d61-b5cc-b079b66cfa76
+    --secret-group-id d898bb90-82f6-4d61-b5cc-b079b66cfa76
 ```
 {: pre}
 
@@ -387,12 +418,10 @@ ibmcloud secrets-manager secret-group-update --id ID [--name NAME] [--descriptio
 `--name` (string)
 :   The name of your secret group.
 
-    The maximum length is `64` characters. The minimum length is `2` characters. The value must match regular expression `/^[A-Za-z0-9][A-Za-z0-9]*(?:_*-*\\.*[A-Za-z0-9]+)*$/`.
+    The maximum length is `64` characters. The minimum length is `2` characters. The value must match regular expression `/^[A-Za-z0-9_][A-Za-z0-9_]*(?:_*-*\\.*[A-Za-z0-9]*)*[A-Za-z0-9]+$/`.
 
 `--description` (string)
 :   An extended description of your secret group.
-
-To protect your privacy, do not use personal data, such as your name or location, as a description for your secret group.
 
     The maximum length is `1024` characters. The minimum length is `0` characters. The value must match regular expression `/(.*?)/`.
 
@@ -401,9 +430,9 @@ To protect your privacy, do not use personal data, such as your name or location
 
 ```sh
 ibmcloud secrets-manager secret-group-update \
-    --id=d898bb90-82f6-4d61-b5cc-b079b66cfa76 \
-    --name=my-secret-group \
-    --description='Extended description for this group.'
+    --id d898bb90-82f6-4d61-b5cc-b079b66cfa76 \
+    --name my-secret-group \
+    --description 'Extended description for this group.'
 ```
 {: pre}
 
@@ -449,7 +478,7 @@ ibmcloud secrets-manager secret-group-delete --id ID
 
 ```sh
 ibmcloud secrets-manager secret-group-delete \
-    --id=d898bb90-82f6-4d61-b5cc-b079b66cfa76
+    --id d898bb90-82f6-4d61-b5cc-b079b66cfa76
 ```
 {: pre}
 
@@ -468,7 +497,7 @@ Use this operation to either generate or import an existing secret, such as a TL
 To learn more about the types of secrets that you can create with Secrets Manager, check out the [docs](/docs/secrets-manager?topic=secrets-manager-what-is-secret).
 
 ```sh
-ibmcloud secrets-manager secret-create --secret-prototype SECRET-PROTOTYPE
+ibmcloud secrets-manager secret-create [--secret-prototype SECRET-PROTOTYPE]
 ```
 
 
@@ -476,16 +505,187 @@ ibmcloud secrets-manager secret-create --secret-prototype SECRET-PROTOTYPE
 {: #secrets-manager-secret-create-cli-options}
 
 `--secret-prototype` ([`SecretPrototype`](#cli-secret-prototype-example-schema))
-:   Specify the properties for your secret. Required.
+:   A JSON containing the required details for creating a secret. This JSON option can instead be provided by setting individual fields with other options. It is mutually exclusive with those options.
 
     Provide a JSON string option or specify a JSON file to read from by providing a filepath option that begins with a `@`, e.g. `--secret-prototype=@path/to/file.json`.
+
+`--secret-custom-metadata` (generic map)
+:   The secret metadata that a user can customize. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+
+    Provide a JSON string option or specify a JSON file to read from by providing a filepath option that begins with a `@`, e.g. `--secret-custom-metadata=@path/to/file.json`.
+
+`--secret-description` (string)
+:   An extended description of your secret. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `1024` characters. The minimum length is `0` characters. The value must match regular expression `/(.*?)/`.
+
+`--secret-expiration-date` (strfmt.DateTime)
+:   The date when the secret material expires. The date format follows the `RFC 3339` format. Supported secret types: Arbitrary, username_password. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+
+`--secret-labels` ([]string)
+:   Labels that you can use to search secrets in your instance. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+
+    The list items must match regular expression `/(.*?)/`. The maximum length is `30` items. The minimum length is `0` items.
+
+`--secret-name` (string)
+:   A human-readable name to assign to your secret. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `256` characters. The minimum length is `2` characters. The value must match regular expression `/^[A-Za-z0-9_][A-Za-z0-9_]*(?:_*-*\\.*[A-Za-z0-9]*)*[A-Za-z0-9]+$/`.
+
+`--secret-group-id` (string)
+:   A v4 UUID identifier, or `default` secret group. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `36` characters. The minimum length is `7` characters. The value must match regular expression `/^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|default)$/`.
+
+`--secret-type` (string)
+:   The secret type. Supported types are arbitrary, certificates (imported, public, and private), IAM credentials, key-value, and user credentials. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+
+    Allowable values are: `arbitrary`, `imported_cert`, `public_cert`, `iam_credentials`, `kv`, `username_password`, `private_cert`.
+
+`--arbitrary-payload` (string)
+:   The secret data that is assigned to an `arbitrary` secret. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `1000000` characters. The minimum length is `0` characters. The value must match regular expression `/(.*?)/`.
+
+`--secret-version-custom-metadata` (generic map)
+:   The secret version metadata that a user can customize. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+
+    Provide a JSON string option or specify a JSON file to read from by providing a filepath option that begins with a `@`, e.g. `--secret-version-custom-metadata=@path/to/file.json`.
+
+`--iam-credentials-ttl` (string)
+:   The time-to-live (TTL) or lease duration to assign to credentials that are generated. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `10` characters. The minimum length is `2` characters. The value must match regular expression `/^[0-9]+[s,m,h,d]{0,1}$/`.
+
+`--iam-credentials-access-groups` ([]string)
+:   Access Groups that you can use for an `iam_credentials` secret. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+
+    The list items must match regular expression `/^AccessGroupId-[a-z0-9-]+[a-z0-9]$/`. The maximum length is `10` items. The minimum length is `1` item.
+
+`--iam-credentials-service-id` (string)
+:   The service ID under which the API key is created. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `50` characters. The minimum length is `40` characters. The value must match regular expression `/^[A-Za-z0-9][A-Za-z0-9]*(?:-?[A-Za-z0-9]+)*$/`.
+
+`--iam-credentials-reuse-apikey` (bool)
+:   This parameter indicates whether to reuse the service ID and API key for future read operations. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+
+`--secret-rotation` ([`RotationPolicy`](#cli-rotation-policy-example-schema))
+:   This field indicates whether Secrets Manager rotates your secrets automatically. Supported secret types: username_password, private_cert, public_cert, iam_credentials. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+
+    Provide a JSON string option or specify a JSON file to read from by providing a filepath option that begins with a `@`, e.g. `--secret-rotation=@path/to/file.json`.
+
+`--imported-cert-certificate` (string)
+:   The PEM-encoded contents of your certificate. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `100000` characters. The minimum length is `50` characters. The value must match regular expression `/(-{5}BEGIN.+?-{5}[\\s\\S]+-{5}END.+?-{5}[\\s]*)/`.
+
+`--imported-cert-intermediate` (string)
+:   (Optional) The PEM-encoded intermediate certificate that is associated with the root certificate. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `100000` characters. The minimum length is `50` characters. The value must match regular expression `/(-{5}BEGIN.+?-{5}[\\s\\S]+-{5}END.+?-{5}[\\s]*)/`.
+
+`--imported-cert-private-key` (string)
+:   (Optional) The PEM-encoded private key to associate with the certificate. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `100000` characters. The minimum length is `50` characters. The value must match regular expression `/(-{5}BEGIN.+?-{5}[\\s\\S]+-{5}END.+?-{5}[\\s]*)/`.
+
+`--kv-data` (generic map)
+:   The payload data of a key-value secret. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+
+    The minimum length is `1` item.
+
+    Provide a JSON string option or specify a JSON file to read from by providing a filepath option that begins with a `@`, e.g. `--kv-data=@path/to/file.json`.
+
+`--private-cert-template-name` (string)
+:   The name of the certificate template. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `128` characters. The minimum length is `2` characters. The value must match regular expression `/^[A-Za-z0-9][A-Za-z0-9]*(?:_?-?\\.?[A-Za-z0-9]+)*$/`.
+
+`--private-cert-common-name` (string)
+:   The Common Name (CN) represents the server name that is protected by the SSL certificate. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `128` characters. The minimum length is `4` characters. The value must match regular expression `/(.*?)/`.
+
+`--private-cert-alt-names` ([]string)
+:   With the Subject Alternative Name field, you can specify additional hostnames to be protected by a single SSL certificate. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+
+    The list items must match regular expression `/^(.*?)$/`. The maximum length is `99` items. The minimum length is `0` items.
+
+`--private-cert-ip-sans` (string)
+:   The IP Subject Alternative Names to define for the CA certificate, in a comma-delimited list. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `2048` characters. The minimum length is `2` characters. The value must match regular expression `/(.*?)/`.
+
+`--private-cert-uri-sans` (string)
+:   The URI Subject Alternative Names to define for the CA certificate, in a comma-delimited list. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `2048` characters. The minimum length is `2` characters. The value must match regular expression `/(.*?)/`.
+
+`--private-cert-other-sans` ([]string)
+:   The custom Object Identifier (OID) or UTF8-string Subject Alternative Names to define for the CA certificate. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+
+    The list items must match regular expression `/(.*?)/`. The maximum length is `100` items. The minimum length is `0` items.
+
+`--private-cert-csr` (string)
+:   The certificate signing request. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `4096` characters. The minimum length is `2` characters. The value must match regular expression `/^(-{5}BEGIN.+?-{5}[\\s\\S]+-{5}END.+?-{5}[\\s]*)$/`.
+
+`--private-cert-format` (string)
+:   The format of the returned data. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+
+    Allowable values are: `pem`, `pem_bundle`.
+
+`--private-cert-private-key-format` (string)
+:   The format of the generated private key. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+
+    The default value is `der`. Allowable values are: `der`, `pkcs8`.
+
+`--private-cert-exclude-cn-from-sans` (bool)
+:   This parameter controls whether the common name is excluded from Subject Alternative Names (SANs). This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+
+`--public-cert-key-algorithm` (string)
+:   The identifier for the cryptographic algorithm that is used to generate the public key that is associated with the certificate. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+
+    The default value is `RSA2048`. The maximum length is `8` characters. The minimum length is `5` characters. The value must match regular expression `/^(RSA2048|RSA4096|ECDSA256|ECDSA384)$/`.
+
+`--public-cert-ca` (string)
+:   The name of the certificate authority configuration. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `128` characters. The minimum length is `2` characters. The value must match regular expression `/(.*?)/`.
+
+`--public-cert-dns` (string)
+:   The name of the DNS provider configuration. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `128` characters. The minimum length is `2` characters. The value must match regular expression `/(.*?)/`.
+
+`--public-cert-bundle-ca` (bool)
+:   This field indicates whether your issued certificate is bundled with intermediate certificates. Set to `false` for the certificate file to contain only the issued certificate. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+
+    The default value is `true`.
+
+`--username-password-username` (string)
+:   The username that is assigned to an `username_password` secret. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `64` characters. The minimum length is `2` characters. The value must match regular expression `/[A-Za-z0-9+-=.]*/`.
+
+`--username-password-password` (string)
+:   The password that is assigned to an `username_password` secret. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `64` characters. The minimum length is `6` characters. The value must match regular expression `/.{6,64}/`.
 
 #### Example
 {: #secrets-manager-secret-create-examples}
 
+Example request
+
 ```sh
+ibmcloud secrets-manager secret-create --secret-name=example-arbitrary-secret --secret-secret-type=arbitrary --arbitrary-payload=super-secret-data
+
 ibmcloud secrets-manager secret-create \
-    --secret-prototype='{"custom_metadata": {"anyKey": "anyValue"}, "description": "Description of my arbitrary secret.", "expiration_date": "2023-10-05T11:49:42Z", "labels": ["dev","us-south"], "name": "example-arbitrary-secret", "secret_group_id": "default", "secret_type": "arbitrary", "payload": "secret-data", "version_custom_metadata": {"anyKey": "anyValue"}}'
+  --secret-prototype='{"name": "example-arbitrary-secret", "secret_type": "arbitrary", "payload":"super-secret-data"}'
+
 ```
 {: pre}
 
@@ -504,26 +704,17 @@ ibmcloud secrets-manager secrets [--offset OFFSET] [--limit LIMIT] [--sort SORT]
 {: #secrets-manager-secrets-cli-options}
 
 `--offset` (int64)
-:   The number of secrets to skip. By specifying `offset`, you retrieve a subset of items that starts with the `offset` value. Use `offset` with `limit` to page through your available resources.
+:   The number of secrets to skip.
 
-**Usage:** If you have 100 secrets in your instance, and you want to retrieve secrets 26 through 50, use
-`..?offset=25&limit=25`.
-
-    The minimum value is `0`.
+    The default value is `0`. The minimum value is `0`.
 
 `--limit` (int64)
 :   The number of secrets to list.
 
-    The maximum value is `1000`. The minimum value is `1`.
+    The default value is `200`. The maximum value is `1000`. The minimum value is `1`.
 
 `--sort` (string)
-:   Sort a collection of secrets by the specified field in ascending order. To sort in descending order use the `-` character
-
-
-**Available values:** id | created_at | updated_at | expiration_date | secret_type | name
-
-**Usage:** To sort a list of secrets by their creation date, use
-`../secrets?sort=created_at`.
+:   Sort a collection of secrets by the specified field in ascending order. To sort in descending order use the `-` character.
 
     The maximum length is `17` characters. The minimum length is `2` characters. The value must match regular expression `/^-?(id|created_at|updated_at|expiration_date|secret_type|name)$/`.
 
@@ -533,7 +724,7 @@ ibmcloud secrets-manager secrets [--offset OFFSET] [--limit LIMIT] [--sort SORT]
     The maximum length is `128` characters. The minimum length is `2` characters. The value must match regular expression `/(.*?)/`.
 
 `--groups` ([]string)
-:   Filter secrets by groups.
+:   Filter secrets by groups. Provide the IDs of the groups to filter by.
 
     The list items must match regular expression `/^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|default)$/`. The maximum length is `201` items. The minimum length is `0` items.
 
@@ -545,11 +736,11 @@ ibmcloud secrets-manager secrets [--offset OFFSET] [--limit LIMIT] [--sort SORT]
 
 ```sh
 ibmcloud secrets-manager secrets \
-    --offset=0 \
-    --limit=10 \
-    --sort=created_at \
-    --search=example \
-    --groups=default
+    --offset 0 \
+    --limit 10 \
+    --sort created_at \
+    --search example \
+    --groups default,cac40995-c37a-4dcb-9506-472869077634
 ```
 {: pre}
 
@@ -680,7 +871,7 @@ ibmcloud secrets-manager secret --id ID
 
 ```sh
 ibmcloud secrets-manager secret \
-    --id=0b5571f7-21e6-42b7-91c5-3f5ac9793a46
+    --id 0b5571f7-21e6-42b7-91c5-3f5ac9793a46
 ```
 {: pre}
 
@@ -707,7 +898,7 @@ ibmcloud secrets-manager secret-delete --id ID
 
 ```sh
 ibmcloud secrets-manager secret-delete \
-    --id=0b5571f7-21e6-42b7-91c5-3f5ac9793a46
+    --id 0b5571f7-21e6-42b7-91c5-3f5ac9793a46
 ```
 {: pre}
 
@@ -734,7 +925,7 @@ ibmcloud secrets-manager secret-metadata --id ID
 
 ```sh
 ibmcloud secrets-manager secret-metadata \
-    --id=0b5571f7-21e6-42b7-91c5-3f5ac9793a46
+    --id 0b5571f7-21e6-42b7-91c5-3f5ac9793a46
 ```
 {: pre}
 
@@ -744,7 +935,7 @@ ibmcloud secrets-manager secret-metadata \
 Update the metadata of a secret, such as its name or description.
 
 ```sh
-ibmcloud secrets-manager secret-metadata-update --id ID [--name NAME] [--description DESCRIPTION] [--labels LABELS] [--custom-metadata CUSTOM-METADATA] [--expiration-date EXPIRATION-DATE] [--ttl TTL] [--rotation ROTATION]
+ibmcloud secrets-manager secret-metadata-update --id ID [--name NAME] [--description DESCRIPTION] [--labels LABELS] [--custom-metadata CUSTOM-METADATA] [--expiration-date EXPIRATION-DATE] [--iam-credentials-ttl IAM-CREDENTIALS-TTL] [--rotation ROTATION]
 ```
 
 
@@ -764,23 +955,15 @@ ibmcloud secrets-manager secret-metadata-update --id ID [--name NAME] [--descrip
 `--name` (string)
 :   A human-readable name to assign to your secret.
 
-To protect your privacy, do not use personal data, such as your name or location, as a name for your secret.
-
-    The maximum length is `256` characters. The minimum length is `2` characters. The value must match regular expression `/^[A-Za-z0-9][A-Za-z0-9]*(?:_*-*\\.*[A-Za-z0-9]+)*$/`.
+    The maximum length is `256` characters. The minimum length is `2` characters. The value must match regular expression `/^[A-Za-z0-9_][A-Za-z0-9_]*(?:_*-*\\.*[A-Za-z0-9]*)*[A-Za-z0-9]+$/`.
 
 `--description` (string)
 :   An extended description of your secret.
 
-To protect your privacy, do not use personal data, such as your name or location, as a description for your secret group.
-
     The maximum length is `1024` characters. The minimum length is `0` characters. The value must match regular expression `/(.*?)/`.
 
 `--labels` ([]string)
-:   Labels that you can use to search secrets in your instance. Only 30 labels can be created.
-
-Label can be between 2-30 characters, including spaces.
-
-To protect your privacy, do not use personal data, such as your name or location, as a label for your secret.
+:   Labels that you can use to search secrets in your instance.
 
     The list items must match regular expression `/(.*?)/`. The maximum length is `30` items. The minimum length is `0` items.
 
@@ -788,31 +971,27 @@ To protect your privacy, do not use personal data, such as your name or location
 :   The secret metadata that a user can customize.
 
 `--expiration-date` (strfmt.DateTime)
-:   The date when the secret material expires. The date format follows the `RFC 3339` format.
+:   The date when the secret material expires. The date format follows the `RFC 3339` format. Supported secret types: Arbitrary, username_password.
 
-`--ttl` (string)
+`--iam-credentials-ttl` (string)
 :   The time-to-live (TTL) or lease duration to assign to credentials that are generated.
-
-For `iam_credentials` secrets, the TTL defines for how long each generated API key remains valid. The value can be either an integer that specifies the number of seconds, or the string representation of a duration, such as `120m` or `24h`.
-
-The minimum duration is 1 minute. The maximum is 90 days.
 
     The maximum length is `10` characters. The minimum length is `2` characters. The value must match regular expression `/^[0-9]+[s,m,h,d]{0,1}$/`.
 
 `--rotation` ([`RotationPolicy`](#cli-rotation-policy-example-schema))
-:   This field indicates whether Secrets Manager rotates your secrets automatically.
+:   This field indicates whether Secrets Manager rotates your secrets automatically. Supported secret types: username_password, private_cert, public_cert, iam_credentials.
 
 #### Example
 {: #secrets-manager-secret-metadata-update-examples}
 
 ```sh
 ibmcloud secrets-manager secret-metadata-update \
-    --id=0b5571f7-21e6-42b7-91c5-3f5ac9793a46 \
-    --name=updated-arbitrary-secret-name \
-    --description='updated Arbitrary Secret description' \
-    --labels=dev,us-south \
-    --custom-metadata='{"anyKey": "anyValue"}' \
-    --expiration-date=2033-04-12T23:20:50.520Z
+    --id 0b5571f7-21e6-42b7-91c5-3f5ac9793a46 \
+    --name updated-arbitrary-secret-name-example \
+    --description 'updated Arbitrary Secret description' \
+    --labels dev,us-south \
+    --custom-metadata '{"anyKey": "anyValue"}' \
+    --expiration-date 2033-04-12T23:20:50.520Z
 ```
 {: pre}
 
@@ -822,7 +1001,7 @@ ibmcloud secrets-manager secret-metadata-update \
 Create a secret action. This operation supports the following actions:.
 
 ```sh
-ibmcloud secrets-manager secret-action-create --id ID --secret-action-prototype SECRET-ACTION-PROTOTYPE
+ibmcloud secrets-manager secret-action-create --id ID [--secret-action-prototype SECRET-ACTION-PROTOTYPE]
 ```
 
 
@@ -835,17 +1014,69 @@ ibmcloud secrets-manager secret-action-create --id ID --secret-action-prototype 
     The maximum length is `36` characters. The minimum length is `36` characters. The value must match regular expression `/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/`.
 
 `--secret-action-prototype` ([`SecretActionPrototype`](#cli-secret-action-prototype-example-schema))
-:   The request body to specify the properties for your secret action. Required.
+:   The request body to specify the properties for your secret action. This JSON option can instead be provided by setting individual fields with other options. It is mutually exclusive with those options.
 
     Provide a JSON string option or specify a JSON file to read from by providing a filepath option that begins with a `@`, e.g. `--secret-action-prototype=@path/to/file.json`.
+
+`--secret-action-type` (string)
+:   The type of secret action. This option provides a value for a sub-field of the JSON option 'secret-action-prototype'. It is mutually exclusive with that option.
+
+    Allowable values are: `public_cert_action_validate_dns_challenge`, `private_cert_action_revoke_certificate`.
 
 #### Example
 {: #secrets-manager-secret-action-create-examples}
 
+Example request
+
 ```sh
+ibmcloud secrets-manager secret-action-create --id=0b5571f7-21e6-42b7-91c5-3f5ac9793a46 --secret-action-type=public_cert_action_validate_dns_challenge
+
 ibmcloud secrets-manager secret-action-create \
-    --id=0b5571f7-21e6-42b7-91c5-3f5ac9793a46 \
-    --secret-action-prototype='{"action_type": "public_cert_action_validate_dns_challenge"}'
+  --id=0b5571f7-21e6-42b7-91c5-3f5ac9793a46 \
+  --secret-action-prototype='{"action_type": "public_cert_action_validate_dns_challenge"}'
+
+```
+{: pre}
+
+### `ibmcloud secrets-manager secret-by-name`
+{: #secrets-manager-cli-secret-by-name-command}
+
+Get a secret and its details by specifying the Name and Type of the secret.
+
+A successful request returns the secret data that is associated with your secret, along with other metadata. To view only the details of a specified secret without retrieving its value, use the [Get secret metadata](#get-secret-metadata) operation.
+
+```sh
+ibmcloud secrets-manager secret-by-name --secret-type SECRET-TYPE --name NAME --secret-group-name SECRET-GROUP-NAME
+```
+
+
+#### Command options
+{: #secrets-manager-secret-by-name-cli-options}
+
+`--secret-type` (string)
+:   The secret type. Supported types are arbitrary, certificates (imported, public, and private), IAM credentials, key-value, and user credentials. Required.
+
+    Allowable values are: `arbitrary`, `imported_cert`, `public_cert`, `iam_credentials`, `kv`, `username_password`, `private_cert`.
+
+`--name` (string)
+:   A human-readable name to assign to your secret.
+To protect your privacy, do not use personal data, such as your name or location, as a name for your secret. Required.
+
+    The maximum length is `256` characters. The minimum length is `2` characters. The value must match regular expression `/^\\w(([\\w-.]+)?\\w)?$/`.
+
+`--secret-group-name` (string)
+:   The name of your secret group. Required.
+
+    The maximum length is `64` characters. The minimum length is `2` characters. The value must match regular expression `/(.*?)/`.
+
+#### Example
+{: #secrets-manager-secret-by-name-examples}
+
+```sh
+ibmcloud secrets-manager secret-by-name \
+    --secret-type arbitrary \
+    --name my-secret \
+    --secret-group-name default
 ```
 {: pre}
 
@@ -860,7 +1091,7 @@ Create and manage the versions of your secrets.
 Create a new secret version.
 
 ```sh
-ibmcloud secrets-manager secret-version-create --secret-id SECRET-ID --secret-version-prototype SECRET-VERSION-PROTOTYPE
+ibmcloud secrets-manager secret-version-create --secret-id SECRET-ID [--secret-version-prototype SECRET-VERSION-PROTOTYPE]
 ```
 
 
@@ -873,17 +1104,79 @@ ibmcloud secrets-manager secret-version-create --secret-id SECRET-ID --secret-ve
     The maximum length is `36` characters. The minimum length is `36` characters. The value must match regular expression `/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/`.
 
 `--secret-version-prototype` ([`SecretVersionPrototype`](#cli-secret-version-prototype-example-schema))
-:   Specify the properties for your new secret version. Required.
+:   Specify the properties for your new secret version. This JSON option can instead be provided by setting individual fields with other options. It is mutually exclusive with those options.
 
     Provide a JSON string option or specify a JSON file to read from by providing a filepath option that begins with a `@`, e.g. `--secret-version-prototype=@path/to/file.json`.
+
+`--arbitrary-payload` (string)
+:   The secret data that is assigned to an `arbitrary` secret. This option provides a value for a sub-field of the JSON option 'secret-version-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `1000000` characters. The minimum length is `0` characters. The value must match regular expression `/(.*?)/`.
+
+`--secret-version-custom-metadata` (generic map)
+:   The secret metadata that a user can customize. This option provides a value for a sub-field of the JSON option 'secret-version-prototype'. It is mutually exclusive with that option.
+
+    Provide a JSON string option or specify a JSON file to read from by providing a filepath option that begins with a `@`, e.g. `--secret-version-custom-metadata=@path/to/file.json`.
+
+`--secret-version-version-custom-metadata` (generic map)
+:   The secret version metadata that a user can customize. This option provides a value for a sub-field of the JSON option 'secret-version-prototype'. It is mutually exclusive with that option.
+
+    Provide a JSON string option or specify a JSON file to read from by providing a filepath option that begins with a `@`, e.g. `--secret-version-version-custom-metadata=@path/to/file.json`.
+
+`--secret-version-restore-from-version` (string)
+:   A v4 UUID identifier, or `current` or `previous` secret version aliases. This option provides a value for a sub-field of the JSON option 'secret-version-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `36` characters. The minimum length is `7` characters. The value must match regular expression `/^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|current|previous)$/`.
+
+`--imported-cert-certificate` (string)
+:   The PEM-encoded contents of your certificate. This option provides a value for a sub-field of the JSON option 'secret-version-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `100000` characters. The minimum length is `50` characters. The value must match regular expression `/(-{5}BEGIN.+?-{5}[\\s\\S]+-{5}END.+?-{5}[\\s]*)/`.
+
+`--imported-cert-intermediate` (string)
+:   (Optional) The PEM-encoded intermediate certificate that is associated with the root certificate. This option provides a value for a sub-field of the JSON option 'secret-version-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `100000` characters. The minimum length is `50` characters. The value must match regular expression `/(-{5}BEGIN.+?-{5}[\\s\\S]+-{5}END.+?-{5}[\\s]*)/`.
+
+`--imported-cert-private-key` (string)
+:   (Optional) The PEM-encoded private key to associate with the certificate. This option provides a value for a sub-field of the JSON option 'secret-version-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `100000` characters. The minimum length is `50` characters. The value must match regular expression `/(-{5}BEGIN.+?-{5}[\\s\\S]+-{5}END.+?-{5}[\\s]*)/`.
+
+`--kv-data` (generic map)
+:   The payload data of a key-value secret. This option provides a value for a sub-field of the JSON option 'secret-version-prototype'. It is mutually exclusive with that option.
+
+    The minimum length is `1` item.
+
+    Provide a JSON string option or specify a JSON file to read from by providing a filepath option that begins with a `@`, e.g. `--kv-data=@path/to/file.json`.
+
+`--private-cert-csr` (string)
+:   The certificate signing request. This option provides a value for a sub-field of the JSON option 'secret-version-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `4096` characters. The minimum length is `2` characters. The value must match regular expression `/^(-{5}BEGIN.+?-{5}[\\s\\S]+-{5}END.+?-{5}[\\s]*)$/`.
+
+`--public-cert-rotation` ([`PublicCertificateRotationObject`](#cli-public-certificate-rotation-object-example-schema))
+:   Defines the rotation object that is used to manually rotate public certificates. This option provides a value for a sub-field of the JSON option 'secret-version-prototype'. It is mutually exclusive with that option.
+
+    Provide a JSON string option or specify a JSON file to read from by providing a filepath option that begins with a `@`, e.g. `--public-cert-rotation=@path/to/file.json`.
+
+`--username-password-password` (string)
+:   The password that is assigned to an `username_password` secret. This option provides a value for a sub-field of the JSON option 'secret-version-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `64` characters. The minimum length is `6` characters. The value must match regular expression `/.{6,64}/`.
 
 #### Example
 {: #secrets-manager-secret-version-create-examples}
 
+Example request
+
 ```sh
+ibmcloud secrets-manager secret-version-create --arbitrary-payload='updated secret credentials' --secret-version-custom-metadata='{"anyKey": "anyValue"}'
+
 ibmcloud secrets-manager secret-version-create \
-    --secret-id=0b5571f7-21e6-42b7-91c5-3f5ac9793a46 \
-    --secret-version-prototype='{"payload": "updated secret credentials", "custom_metadata": {"anyKey": "anyValue"}, "version_custom_metadata": {"anyKey": "anyValue"}}'
+  --secret-id=0b5571f7-21e6-42b7-91c5-3f5ac9793a46 \
+  --secret-version-prototype='{"payload": "updated secret credentials", "custom_metadata": {"anyKey": "anyValue"}, "version_custom_metadata": {"anyKey": "anyValue"}}'
+
 ```
 {: pre}
 
@@ -912,7 +1205,7 @@ ibmcloud secrets-manager secret-versions --secret-id SECRET-ID
 
 ```sh
 ibmcloud secrets-manager secret-versions \
-    --secret-id=0b5571f7-21e6-42b7-91c5-3f5ac9793a46
+    --secret-id 0b5571f7-21e6-42b7-91c5-3f5ac9793a46
 ```
 {: pre}
 
@@ -977,8 +1270,8 @@ ibmcloud secrets-manager secret-version --secret-id SECRET-ID --id ID
 
 ```sh
 ibmcloud secrets-manager secret-version \
-    --secret-id=0b5571f7-21e6-42b7-91c5-3f5ac9793a46 \
-    --id=eb4cf24d-9cae-424b-945e-159788a5f535
+    --secret-id 0b5571f7-21e6-42b7-91c5-3f5ac9793a46 \
+    --id eb4cf24d-9cae-424b-945e-159788a5f535
 ```
 {: pre}
 
@@ -1012,8 +1305,8 @@ ibmcloud secrets-manager secret-version-data-delete --secret-id SECRET-ID --id I
 
 ```sh
 ibmcloud secrets-manager secret-version-data-delete \
-    --secret-id=0b5571f7-21e6-42b7-91c5-3f5ac9793a46 \
-    --id=eb4cf24d-9cae-424b-945e-159788a5f535
+    --secret-id 0b5571f7-21e6-42b7-91c5-3f5ac9793a46 \
+    --id eb4cf24d-9cae-424b-945e-159788a5f535
 ```
 {: pre}
 
@@ -1047,8 +1340,8 @@ ibmcloud secrets-manager secret-version-metadata --secret-id SECRET-ID --id ID
 
 ```sh
 ibmcloud secrets-manager secret-version-metadata \
-    --secret-id=0b5571f7-21e6-42b7-91c5-3f5ac9793a46 \
-    --id=eb4cf24d-9cae-424b-945e-159788a5f535
+    --secret-id 0b5571f7-21e6-42b7-91c5-3f5ac9793a46 \
+    --id eb4cf24d-9cae-424b-945e-159788a5f535
 ```
 {: pre}
 
@@ -1088,9 +1381,9 @@ ibmcloud secrets-manager secret-version-metadata-update --secret-id SECRET-ID --
 
 ```sh
 ibmcloud secrets-manager secret-version-metadata-update \
-    --secret-id=0b5571f7-21e6-42b7-91c5-3f5ac9793a46 \
-    --id=eb4cf24d-9cae-424b-945e-159788a5f535 \
-    --version-custom-metadata='{"anyKey": "anyValue"}'
+    --secret-id 0b5571f7-21e6-42b7-91c5-3f5ac9793a46 \
+    --id eb4cf24d-9cae-424b-945e-159788a5f535 \
+    --version-custom-metadata '{"anyKey": "anyValue"}'
 ```
 {: pre}
 
@@ -1102,7 +1395,7 @@ Create a secret version action. This operation supports the following actions:
 - `private_cert_action_revoke_certificate`: Revoke a version of a private certificate.
 
 ```sh
-ibmcloud secrets-manager secret-version-action-create --secret-id SECRET-ID --id ID --secret-version-action-prototype SECRET-VERSION-ACTION-PROTOTYPE
+ibmcloud secrets-manager secret-version-action-create --secret-id SECRET-ID --id ID [--secret-version-action-prototype SECRET-VERSION-ACTION-PROTOTYPE]
 ```
 
 
@@ -1120,18 +1413,28 @@ ibmcloud secrets-manager secret-version-action-create --secret-id SECRET-ID --id
     The maximum length is `36` characters. The minimum length is `7` characters. The value must match regular expression `/^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|current|previous)$/`.
 
 `--secret-version-action-prototype` ([`SecretVersionActionPrototype`](#cli-secret-version-action-prototype-example-schema))
-:   The request body to specify the properties of the action to create a secret version. Required.
+:   The request body to specify the properties of the action to create a secret version. This JSON option can instead be provided by setting individual fields with other options. It is mutually exclusive with those options.
 
     Provide a JSON string option or specify a JSON file to read from by providing a filepath option that begins with a `@`, e.g. `--secret-version-action-prototype=@path/to/file.json`.
+
+`--secret-version-action-type` (string)
+:   The type of secret version action. This option provides a value for a sub-field of the JSON option 'secret-version-action-prototype'. It is mutually exclusive with that option.
+
+    Allowable values are: `private_cert_action_revoke_certificate`.
 
 #### Example
 {: #secrets-manager-secret-version-action-create-examples}
 
+Example request
+
 ```sh
+ibmcloud secrets-manager secret--version-action-create --secret-id=0b5571f7-21e6-42b7-91c5-3f5ac9793a46 --id=eb4cf24d-9cae-424b-945e-159788a5f535 --secret-version-action-type=private_cert_action_revoke_certificate
+
 ibmcloud secrets-manager secret-version-action-create \
-    --secret-id=0b5571f7-21e6-42b7-91c5-3f5ac9793a46 \
-    --id=eb4cf24d-9cae-424b-945e-159788a5f535 \
-    --secret-version-action-prototype='{"action_type": "private_cert_action_revoke_certificate"}'
+  --secret-id=0b5571f7-21e6-42b7-91c5-3f5ac9793a46 \
+  --id=eb4cf24d-9cae-424b-945e-159788a5f535 \
+  --secret-version-action-prototype='{"action_type": "private_cert_action_revoke_certificate"}'
+
 ```
 {: pre}
 
@@ -1168,17 +1471,14 @@ ibmcloud secrets-manager secrets-locks [--offset OFFSET] [--limit LIMIT] [--sear
 {: #secrets-manager-secrets-locks-cli-options}
 
 `--offset` (int64)
-:   The number of secrets to skip. By specifying `offset`, you retrieve a subset of items that starts with the `offset` value. Use `offset` with `limit` to page through your available resources.
+:   The number of secrets to skip.
 
-**Usage:** If you have 100 secrets in your instance, and you want to retrieve secrets 26 through 50, use
-`..?offset=25&limit=25`.
-
-    The minimum value is `0`.
+    The default value is `0`. The minimum value is `0`.
 
 `--limit` (int64)
 :   The number of secrets to list.
 
-    The maximum value is `1000`. The minimum value is `1`.
+    The default value is `200`. The maximum value is `1000`. The minimum value is `1`.
 
 `--search` (string)
 :   Filter locks that contain the specified string in the field "name".
@@ -1186,7 +1486,7 @@ ibmcloud secrets-manager secrets-locks [--offset OFFSET] [--limit LIMIT] [--sear
     The maximum length is `128` characters. The minimum length is `2` characters. The value must match regular expression `/(.*?)/`.
 
 `--groups` ([]string)
-:   Filter secrets by groups.
+:   Filter secrets by groups. Provide the IDs of the groups to filter by.
 
     The list items must match regular expression `/^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|default)$/`. The maximum length is `201` items. The minimum length is `0` items.
 
@@ -1198,10 +1498,10 @@ ibmcloud secrets-manager secrets-locks [--offset OFFSET] [--limit LIMIT] [--sear
 
 ```sh
 ibmcloud secrets-manager secrets-locks \
-    --offset=0 \
-    --limit=10 \
-    --search=example \
-    --groups=default
+    --offset 0 \
+    --limit 10 \
+    --search example \
+    --groups default,cac40995-c37a-4dcb-9506-472869077634
 ```
 {: pre}
 
@@ -1264,20 +1564,15 @@ ibmcloud secrets-manager secret-locks --id ID [--offset OFFSET] [--limit LIMIT] 
 `--offset` (int64)
 :   The number of locks to skip.
 
-    The minimum value is `0`.
+    The default value is `0`. The minimum value is `0`.
 
 `--limit` (int64)
 :   The number of secrets with locks to list.
 
-    The maximum value is `100`. The minimum value is `1`.
+    The default value is `25`. The maximum value is `100`. The minimum value is `1`.
 
 `--sort` (string)
-:   Sort a collection of locks by the specified field in ascending order. To sort in descending order use the `-` character
-
-**Available values:** created_at | updated_at | name
-
-**Usage:** To sort a list of locks by their creation date, use
-`../locks?sort=created_at`.
+:   Sort a collection of locks by the specified field in ascending order. To sort in descending order use the `-` character.
 
     The maximum length is `17` characters. The minimum length is `4` characters. The value must match regular expression `/^-?(created_at|updated_at|name)$/`.
 
@@ -1294,11 +1589,11 @@ ibmcloud secrets-manager secret-locks --id ID [--offset OFFSET] [--limit LIMIT] 
 
 ```sh
 ibmcloud secrets-manager secret-locks \
-    --id=0b5571f7-21e6-42b7-91c5-3f5ac9793a46 \
-    --offset=0 \
-    --limit=10 \
-    --sort=name \
-    --search=example
+    --id 0b5571f7-21e6-42b7-91c5-3f5ac9793a46 \
+    --offset 0 \
+    --limit 10 \
+    --sort name \
+    --search example
 ```
 {: pre}
 
@@ -1332,12 +1627,22 @@ Example of response body for listing secret locks
     "secret_version_id" : "7bf3814d-58f8-4df8-9cbd-f6860e4ca973",
     "secret_version_alias" : "current",
     "updated_at" : "2022-10-05T21:33:11Z"
+  }, {
+    "created_at" : "2022-06-27T11:58:15Z",
+    "created_by" : "iam-ServiceId-e4a2f0a4-3c76-4bef-b1f2-fbeae11c0f21",
+    "description" : "Lock for consumer 2.",
+    "name" : "lock-example-2",
+    "secret_group_id" : "d8371728-95c8-4c12-b2af-1af98adb9e41",
+    "secret_id" : "0cf4addb-7a90-410b-a3a7-a15bbe2b7909",
+    "secret_version_id" : "7bf3814d-58f8-4df8-9cbd-f6860e4ca973",
+    "secret_version_alias" : "current",
+    "updated_at" : "2022-10-05T21:33:11Z"
   } ],
   "next" : {
     "href" : "https://us-south.secrets-maanger.cloud.ibm.com/88b75b20-aa21-4174-85c9-1feb3cc93c9a/api/v2/secrets/0cf4addb-7a90-410b-a3a7-a15bbe2b7909/locks?offset=150&limit=50"
   },
   "offset" : 100,
-  "total_count" : 1
+  "total_count" : 2
 }
 ```
 {: screen}
@@ -1382,9 +1687,9 @@ ibmcloud secrets-manager secret-locks-bulk-create --id ID --locks LOCKS [--mode 
 
 ```sh
 ibmcloud secrets-manager secret-locks-bulk-create \
-    --id=0b5571f7-21e6-42b7-91c5-3f5ac9793a46 \
-    --locks='[{"name": "lock-example-1", "description": "lock for consumer 1", "attributes": {"anyKey": "anyValue"}}]' \
-    --mode=remove_previous
+    --id 0b5571f7-21e6-42b7-91c5-3f5ac9793a46 \
+    --locks '[{"name": "lock-example-1", "description": "lock for consumer 1", "attributes": {"anyKey": "anyValue"}}]' \
+    --mode remove_previous
 ```
 {: pre}
 
@@ -1446,8 +1751,8 @@ ibmcloud secrets-manager secret-locks-bulk-delete --id ID [--name NAME]
 
 ```sh
 ibmcloud secrets-manager secret-locks-bulk-delete \
-    --id=0b5571f7-21e6-42b7-91c5-3f5ac9793a46 \
-    --name=lock-example-1
+    --id 0b5571f7-21e6-42b7-91c5-3f5ac9793a46 \
+    --name lock-example-1
 ```
 {: pre}
 
@@ -1502,20 +1807,15 @@ ibmcloud secrets-manager secret-version-locks --secret-id SECRET-ID --id ID [--o
 `--offset` (int64)
 :   The number of locks to skip.
 
-    The minimum value is `0`.
+    The default value is `0`. The minimum value is `0`.
 
 `--limit` (int64)
 :   The number of secrets with locks to list.
 
-    The maximum value is `100`. The minimum value is `1`.
+    The default value is `25`. The maximum value is `100`. The minimum value is `1`.
 
 `--sort` (string)
-:   Sort a collection of locks by the specified field in ascending order. To sort in descending order use the `-` character
-
-**Available values:** created_at | updated_at | name
-
-**Usage:** To sort a list of locks by their creation date, use
-`../locks?sort=created_at`.
+:   Sort a collection of locks by the specified field in ascending order. To sort in descending order use the `-` character.
 
     The maximum length is `17` characters. The minimum length is `4` characters. The value must match regular expression `/^-?(created_at|updated_at|name)$/`.
 
@@ -1532,12 +1832,12 @@ ibmcloud secrets-manager secret-version-locks --secret-id SECRET-ID --id ID [--o
 
 ```sh
 ibmcloud secrets-manager secret-version-locks \
-    --secret-id=0b5571f7-21e6-42b7-91c5-3f5ac9793a46 \
-    --id=eb4cf24d-9cae-424b-945e-159788a5f535 \
-    --offset=0 \
-    --limit=10 \
-    --sort=name \
-    --search=example
+    --secret-id 0b5571f7-21e6-42b7-91c5-3f5ac9793a46 \
+    --id eb4cf24d-9cae-424b-945e-159788a5f535 \
+    --offset 0 \
+    --limit 10 \
+    --sort name \
+    --search example
 ```
 {: pre}
 
@@ -1626,10 +1926,10 @@ ibmcloud secrets-manager secret-version-locks-bulk-create --secret-id SECRET-ID 
 
 ```sh
 ibmcloud secrets-manager secret-version-locks-bulk-create \
-    --secret-id=0b5571f7-21e6-42b7-91c5-3f5ac9793a46 \
-    --id=eb4cf24d-9cae-424b-945e-159788a5f535 \
-    --locks='[{"name": "lock-example-1", "description": "lock for consumer 1", "attributes": {"anyKey": "anyValue"}}]' \
-    --mode=remove_previous
+    --secret-id 0b5571f7-21e6-42b7-91c5-3f5ac9793a46 \
+    --id eb4cf24d-9cae-424b-945e-159788a5f535 \
+    --locks '[{"name": "lock-example-1", "description": "lock for consumer 1", "attributes": {"anyKey": "anyValue"}}]' \
+    --mode remove_previous
 ```
 {: pre}
 
@@ -1696,9 +1996,9 @@ ibmcloud secrets-manager secret-version-locks-bulk-delete --secret-id SECRET-ID 
 
 ```sh
 ibmcloud secrets-manager secret-version-locks-bulk-delete \
-    --secret-id=0b5571f7-21e6-42b7-91c5-3f5ac9793a46 \
-    --id=eb4cf24d-9cae-424b-945e-159788a5f535 \
-    --name=lock-example-1
+    --secret-id 0b5571f7-21e6-42b7-91c5-3f5ac9793a46 \
+    --id eb4cf24d-9cae-424b-945e-159788a5f535 \
+    --name lock-example-1
 ```
 {: pre}
 
@@ -1748,7 +2048,7 @@ You can add multiple configurations for your instance as follows:
 - Up to 10 Certificate Template configurations for private certificates.
 
 ```sh
-ibmcloud secrets-manager configuration-create --configuration-prototype CONFIGURATION-PROTOTYPE
+ibmcloud secrets-manager configuration-create [--configuration-prototype CONFIGURATION-PROTOTYPE]
 ```
 
 
@@ -1756,16 +2056,300 @@ ibmcloud secrets-manager configuration-create --configuration-prototype CONFIGUR
 {: #secrets-manager-configuration-create-cli-options}
 
 `--configuration-prototype` ([`ConfigurationPrototype`](#cli-configuration-prototype-example-schema))
-:   The details of your configuration. Required.
+:   A JSON containing the required details for creating a configuration. This JSON option can instead be provided by setting individual fields with other options. It is mutually exclusive with those options.
 
     Provide a JSON string option or specify a JSON file to read from by providing a filepath option that begins with a `@`, e.g. `--configuration-prototype=@path/to/file.json`.
+
+`--config-type` (string)
+:   The configuration type. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    Allowable values are: `public_cert_configuration_ca_lets_encrypt`, `public_cert_configuration_dns_classic_infrastructure`, `public_cert_configuration_dns_cloud_internet_services`, `iam_credentials_configuration`, `private_cert_configuration_root_ca`, `private_cert_configuration_intermediate_ca`, `private_cert_configuration_template`.
+
+`--name` (string)
+:   A human-readable unique name to assign to your configuration. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `128` characters. The minimum length is `2` characters. The value must match regular expression `/^[A-Za-z0-9_][A-Za-z0-9_]*(?:_*-*\\.*[A-Za-z0-9]*)*[A-Za-z0-9]+$/`.
+
+`--private-cert-max-ttl` (string)
+:   The maximum time-to-live (TTL) for certificates that are created by this CA. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `10` characters. The minimum length is `2` characters. The value must match regular expression `/^[0-9]+[s,m,h,d]{0,1}$/`.
+
+`--private-cert-crl-expiry` (string)
+:   The time until the certificate revocation list (CRL) expires. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `10` characters. The minimum length is `2` characters. The value must match regular expression `/^[0-9]+[s,m,h,d]{0,1}$/`.
+
+`--private-cert-crl-disabled` (bool)
+:   This field disables or enables certificate revocation list (CRL) building. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+`--private-cert-crl-distribution-points-encoded` (bool)
+:   This field determines whether to encode the certificate revocation list (CRL) distribution points in the certificates that are issued by this certificate authority. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+`--private-cert-issuing-certificate-urls-encoded` (bool)
+:   This field determines whether to encode the URL of the issuing certificate in the certificates that are issued by this certificate authority. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+`--private-cert-common-name` (string)
+:   The Common Name (CN) represents the server name that is protected by the SSL certificate. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `128` characters. The minimum length is `4` characters. The value must match regular expression `/(.*?)/`.
+
+`--private-cert-alt-names` ([]string)
+:   With the Subject Alternative Name field, you can specify additional hostnames to be protected by a single SSL certificate. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    The list items must match regular expression `/^(.*?)$/`. The maximum length is `99` items. The minimum length is `0` items.
+
+`--private-cert-ip-sans` (string)
+:   The IP Subject Alternative Names to define for the CA certificate, in a comma-delimited list. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `2048` characters. The minimum length is `2` characters. The value must match regular expression `/(.*?)/`.
+
+`--private-cert-uri-sans` (string)
+:   The URI Subject Alternative Names to define for the CA certificate, in a comma-delimited list. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `2048` characters. The minimum length is `2` characters. The value must match regular expression `/(.*?)/`.
+
+`--private-cert-other-sans` ([]string)
+:   The custom Object Identifier (OID) or UTF8-string Subject Alternative Names to define for the CA certificate. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    The list items must match regular expression `/(.*?)/`. The maximum length is `100` items. The minimum length is `0` items.
+
+`--private-cert-ttl` (string)
+:   The requested time-to-live (TTL) for certificates that are created by this CA. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `10` characters. The minimum length is `2` characters. The value must match regular expression `/^[0-9]+[s,m,h,d]{0,1}$/`.
+
+`--private-cert-format` (string)
+:   The format of the returned data. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    Allowable values are: `pem`, `pem_bundle`.
+
+`--private-cert-private-key-format` (string)
+:   The format of the generated private key. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    The default value is `der`. Allowable values are: `der`, `pkcs8`.
+
+`--private-cert-private-key-type` (string)
+:   The type of private key to generate. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    Allowable values are: `rsa`, `ec`.
+
+`--private-cert-private-key-bits` (int64)
+:   The number of bits to use to generate the private key. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+`--private-cert-max-path-length` (int64)
+:   The maximum path length to encode in the generated certificate. `-1` means no limit. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+`--private-cert-exclude-cn-from-sans` (bool)
+:   This parameter controls whether the common name is excluded from Subject Alternative Names (SANs). This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+`--private-cert-permitted-dns-domains` ([]string)
+:   The allowed DNS domains or subdomains for the certificates that are to be signed and issued by this CA certificate. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    The list items must match regular expression `/(.*?)/`. The maximum length is `100` items. The minimum length is `0` items.
+
+`--private-cert-subject-organizational-unit` ([]string)
+:   The Organizational Unit (OU) values to define in the subject field of the resulting certificate. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    The list items must match regular expression `/(.*?)/`. The maximum length is `10` items. The minimum length is `0` items.
+
+`--private-cert-subject-organization` ([]string)
+:   The Organization (O) values to define in the subject field of the resulting certificate. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    The list items must match regular expression `/(.*?)/`. The maximum length is `10` items. The minimum length is `0` items.
+
+`--private-cert-subject-country` ([]string)
+:   The Country (C) values to define in the subject field of the resulting certificate. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    The list items must match regular expression `/(.*?)/`. The maximum length is `10` items. The minimum length is `0` items.
+
+`--private-cert-subject-locality` ([]string)
+:   The Locality (L) values to define in the subject field of the resulting certificate. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    The list items must match regular expression `/(.*?)/`. The maximum length is `10` items. The minimum length is `0` items.
+
+`--private-cert-subject-province` ([]string)
+:   The Province (ST) values to define in the subject field of the resulting certificate. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    The list items must match regular expression `/(.*?)/`. The maximum length is `10` items. The minimum length is `0` items.
+
+`--private-cert-subject-street-address` ([]string)
+:   The street address values to define in the subject field of the resulting certificate. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    The list items must match regular expression `/(.*?)/`. The maximum length is `10` items. The minimum length is `0` items.
+
+`--private-cert-subject-postal-code` ([]string)
+:   The postal code values to define in the subject field of the resulting certificate. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    The list items must match regular expression `/(.*?)/`. The maximum length is `10` items. The minimum length is `0` items.
+
+`--private-cert-serial-number` (string)
+:    The requested value for the `serialNumber` (https://datatracker.ietf.org/doc/html/rfc4519#section-2.31) attribute that is in the certificate's distinguished name (DN).  This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `64` characters. The minimum length is `32` characters. The value must match regular expression `/[^a-fA-F0-9]/`.
+
+`--private-cert-signing-method` (string)
+:   The signing method to use with this certificate authority to generate private certificates. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    Allowable values are: `internal`, `external`.
+
+`--private-cert-issuer` (string)
+:   The distinguished name that identifies the entity that signed and issued the certificate. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `128` characters. The minimum length is `2` characters. The value must match regular expression `/(.*?)/`.
+
+`--private-cert-ca-name` (string)
+:   The name of the intermediate certificate authority. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `128` characters. The minimum length is `2` characters. The value must match regular expression `/^[A-Za-z0-9][A-Za-z0-9]*(?:_?-?\\.?[A-Za-z0-9]+)*$/`.
+
+`--private-cert-allowed-secret-groups` (string)
+:   This field scopes the creation of private certificates to only the secret groups that you specify. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `1024` characters. The minimum length is `2` characters. The value must match regular expression `/(.*?)/`.
+
+`--private-cert-allow-localhost` (bool)
+:   This field indicates whether to allow `localhost` to be included as one of the requested common names. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+`--private-cert-allowed-domains` ([]string)
+:   The domains to define for the certificate template. This property is used along with the `allow_bare_domains` and `allow_subdomains` options. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    The list items must match regular expression `/(.*?)/`. The maximum length is `100` items. The minimum length is `0` items.
+
+`--private-cert-allowed-domains-template` (bool)
+:   This field indicates whether to allow the domains that are supplied in the `allowed_domains` field to contain access control list (ACL) templates. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+`--private-cert-allow-bare-domains` (bool)
+:   This field indicates whether to allow clients to request private certificates that match the value of the actual domains on the final certificate. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+`--private-cert-allow-subdomains` (bool)
+:   This field indicates whether to allow clients to request private certificates with common names (CN) that are subdomains of the CNs that are allowed by the other certificate template options. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+`--private-cert-allow-glob-domains` (bool)
+:   This field indicates whether to allow glob patterns in the names that are specified in the `allowed_domains` field. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+`--private-cert-allow-wildcard` (bool)
+:   This field indicates whether the issuance of certificates with RFC 6125 wildcards in the CN field. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+`--private-cert-allow-any-name` (bool)
+:   This field indicates whether to allow clients to request a private certificate that matches any common name. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+`--private-cert-enforce-hostname` (bool)
+:   This field indicates whether to enforce only valid hostnames for common names, DNS Subject Alternative Names, and the host section of email addresses. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+`--private-cert-allow-ip-sans` (bool)
+:   This field indicates whether to allow clients to request a private certificate with IP Subject Alternative Names. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+`--private-cert-allowed-uri-sans` ([]string)
+:   The URI Subject Alternative Names to allow for private certificates. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    The list items must match regular expression `/(.*?)/`. The maximum length is `100` items. The minimum length is `0` items.
+
+`--private-cert-allowed-other-sans` ([]string)
+:   The custom Object Identifier (OID) or UTF8-string Subject Alternative Names (SANs) to allow for private certificates. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    The list items must match regular expression `/(.*?)/`. The maximum length is `100` items. The minimum length is `0` items.
+
+`--private-cert-server-flag` (bool)
+:   This field indicates whether private certificates are flagged for server use. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+`--private-cert-client-flag` (bool)
+:   This field indicates whether private certificates are flagged for client use. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+`--private-cert-code-signing-flag` (bool)
+:   This field indicates whether private certificates are flagged for code signing use. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+`--private-cert-email-protection-flag` (bool)
+:   This field indicates whether private certificates are flagged for email protection use. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+`--private-cert-key-usage` ([]string)
+:   The allowed key usage constraint to define for private certificates. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    The list items must match regular expression `/^[a-zA-Z]+$/`. The maximum length is `100` items. The minimum length is `0` items.
+
+`--private-cert-ext-key-usage` ([]string)
+:   The allowed extended key usage constraint on private certificates. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    The list items must match regular expression `/^[a-zA-Z]+$/`. The maximum length is `100` items. The minimum length is `0` items.
+
+`--private-cert-ext-key-usage-oids` ([]string)
+:   A list of extended key usage Object Identifiers (OIDs). This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    The list items must match regular expression `/(.*?)/`. The maximum length is `100` items. The minimum length is `0` items.
+
+`--private-cert-use-csr-common-name` (bool)
+:   this field determines whether to use the common name (CN) from a certificate signing request (CSR). This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+`--private-cert-use-cse-sans` (bool)
+:   this field determines whether to use the Subject Alternative Names (SANs) from a certificate signing request (CSR). This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+`--private-cert-require-cn` (bool)
+:   This field indicates whether to require a common name to create a private certificate. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+`--private-cert-policy-identifiers` ([]string)
+:   A list of policy Object Identifiers (OIDs). This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    The list items must match regular expression `/(.*?)/`. The maximum length is `100` items. The minimum length is `0` items.
+
+`--private-cert-basic-constraints-valid-for-non-ca` (bool)
+:   This field indicates whether to mark the Basic Constraints extension of an issued private certificate as valid for non-CA certificates. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+`--private-cert-not-before-duration` (string)
+:   The duration in seconds by which to backdate the `not_before` property of an issued private certificate. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `10` characters. The minimum length is `2` characters. The value must match regular expression `/^[0-9]+[s,m,h,d]{0,1}$/`.
+
+`--public-cert-lets-encrypt-environment` (string)
+:   The configuration of the Let's Encrypt CA environment. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    Allowable values are: `production`, `staging`.
+
+`--public-cert-lets-encrypt-private-key` (string)
+:   The PEM-encoded private key of your Let's Encrypt account. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `100000` characters. The minimum length is `50` characters. The value must match regular expression `/(^-----BEGIN PRIVATE KEY-----.*?)|(^-----BEGIN RSA PRIVATE KEY-----.*?)/`.
+
+`--public-cert-lets-encrypt-preferred-chain` (string)
+:   The preferred chain with an issuer that matches this Subject Common Name. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `30` characters. The minimum length is `2` characters. The value must match regular expression `/(.*?)/`.
+
+`--public-cert-cloud-internet-services-apikey` (string)
+:   An IBM Cloud API key that can to list domains in your Cloud Internet Services instance. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `128` characters. The minimum length is `4` characters. The value must match regular expression `/(.*?)/`.
+
+`--public-cert-cloud-internet-services-crn` (string)
+:   A CRN that uniquely identifies an IBM Cloud resource. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `512` characters. The minimum length is `9` characters. The value must match regular expression `/^crn:v[0-9](:([A-Za-z0-9-._~!$&'()*+,;=@\/]|%[0-9A-Z]{2})*){8}$/`.
+
+`--public-cert-classic-infrastructure-username` (string)
+:   The username that is associated with your classic infrastructure account. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `128` characters. The minimum length is `2` characters. The value must match regular expression `/(.*?)/`.
+
+`--public-cert-classic-infrastructure-password` (string)
+:   Your classic infrastructure API key. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `128` characters. The minimum length is `2` characters. The value must match regular expression `/(.*?)/`.
+
+`--iam-credentials-apikey` (string)
+:   The API key that is used to set the iam_credentials engine. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `60` characters. The minimum length is `5` characters. The value must match regular expression `/^(?:[A-Za-z0-9_\\-]{4})*(?:[A-Za-z0-9_\\-]{2}==|[A-Za-z0-9_\\-]{3}=)?$/`.
 
 #### Example
 {: #secrets-manager-configuration-create-examples}
 
+Example request
+
 ```sh
+ibmcloud secrets-manager configuration-create --config-type=private_cert_configuration_root_ca \
+  --name=example-root-CA --private-cert-common-name=example.com
+
 ibmcloud secrets-manager configuration-create \
-    --configuration-prototype='{"config_type": "private_cert_configuration_root_ca", "name": "example-root-CA", "max_ttl": "43830h", "crl_expiry": "72h", "crl_disable": false, "crl_distribution_points_encoded": true, "issuing_certificates_urls_encoded": true, "common_name": "example.com", "alt_names": ["alt-name-1","alt-name-2"], "ip_sans": "127.0.0.1", "uri_sans": "https://www.example.com/test", "other_sans": ["1.2.3.5.4.3.201.10.4.3;utf8:test@example.com"], "ttl": "2190h", "format": "pem", "private_key_format": "der", "key_type": "rsa", "key_bits": 4096, "max_path_length": -1, "exclude_cn_from_sans": false, "permitted_dns_domains": ["exampleString"], "ou": ["exampleString"], "organization": ["exampleString"], "country": ["exampleString"], "locality": ["exampleString"], "province": ["exampleString"], "street_address": ["exampleString"], "postal_code": ["exampleString"], "serial_number": "d9:be:fe:35:ba:09:42:b5:35:ba:09:42:b5"}'
+  --configuration-prototype='{"config_type": "private_cert_configuration_root_ca", "name": "example-root-CA", "max_ttl": "43830h", "crl_expiry": "72h", "crl_disable": false, "crl_distribution_points_encoded": true, "issuing_certificates_urls_encoded": true, "common_name": "example.com", "alt_names": ["alt-name-1","alt-name-2"], "ip_sans": "127.0.0.1", "uri_sans": "https://www.example.com/test", "other_sans": ["1.2.3.5.4.3.201.10.4.3;utf8:test@example.com"], "ttl": "2190h", "format": "pem", "private_key_format": "der", "key_type": "rsa", "key_bits": 4096, "max_path_length": -1, "exclude_cn_from_sans": false, "permitted_dns_domains": ["exampleString"], "ou": ["exampleString"], "organization": ["exampleString"], "country": ["exampleString"], "locality": ["exampleString"], "province": ["exampleString"], "street_address": ["exampleString"], "postal_code": ["exampleString"], "serial_number": "d9:be:fe:35:ba:09:42:b5:35:ba:09:42:b5"}'
 ```
 {: pre}
 
@@ -1784,26 +2368,17 @@ ibmcloud secrets-manager configurations [--offset OFFSET] [--limit LIMIT] [--sor
 {: #secrets-manager-configurations-cli-options}
 
 `--offset` (int64)
-:   The number of configurations to skip. By specifying `offset`, you retrieve a subset of items that starts with the `offset` value. Use `offset` with `limit` to page through your available resources.
+:   The number of configurations to skip.
 
-**Usage:** If you have 100 configurations in your instance, and you want to retrieve configurations 26 through 50, use
-`..?offset=25&limit=25`.
-
-    The minimum value is `0`.
+    The default value is `0`. The minimum value is `0`.
 
 `--limit` (int64)
 :   The number of configurations to list.
 
-    The maximum value is `1000`. The minimum value is `1`.
+    The default value is `200`. The maximum value is `1000`. The minimum value is `1`.
 
 `--sort` (string)
-:   Sort a collection of configurations by the specified field in ascending order. To sort in descending order use the `-` character
-
-
-**Available values:**  config_type | secret_type | name
-
-**Usage:** To sort a list of configurations by their creation date, use
-`../configurations?sort=config_type`.
+:   Sort a collection of configurations by the specified field in ascending order. To sort in descending order use the `-` character.
 
     The maximum length is `17` characters. The minimum length is `2` characters. The value must match regular expression `/^-?(config_type|secret_type|name)$/`.
 
@@ -1820,10 +2395,10 @@ ibmcloud secrets-manager configurations [--offset OFFSET] [--limit LIMIT] [--sor
 
 ```sh
 ibmcloud secrets-manager configurations \
-    --offset=0 \
-    --limit=10 \
-    --sort=config_type \
-    --search=example
+    --offset 0 \
+    --limit 10 \
+    --sort config_type \
+    --search example
 ```
 {: pre}
 
@@ -1917,7 +2492,7 @@ Get a configuration by specifying its name.
 A successful request returns the details of your configuration.
 
 ```sh
-ibmcloud secrets-manager configuration --name NAME [--x-sm-accept-configuration-type X-SM-ACCEPT-CONFIGURATION-TYPE]
+ibmcloud secrets-manager configuration --name NAME [--config-type CONFIG-TYPE]
 ```
 
 
@@ -1927,9 +2502,9 @@ ibmcloud secrets-manager configuration --name NAME [--x-sm-accept-configuration-
 `--name` (string)
 :   The name of the configuration. Required.
 
-    The maximum length is `128` characters. The minimum length is `2` characters. The value must match regular expression `/^[A-Za-z0-9][A-Za-z0-9]*(?:_*-*\\.*[A-Za-z0-9]+)*$/`.
+    The maximum length is `128` characters. The minimum length is `2` characters. The value must match regular expression `/(.*?)/`.
 
-`--x-sm-accept-configuration-type` (string)
+`--config-type` (string)
 :   The configuration type of this configuration - use this header to resolve 300 error responses.
 
     Allowable values are: `public_cert_configuration_ca_lets_encrypt`, `public_cert_configuration_dns_classic_infrastructure`, `public_cert_configuration_dns_cloud_internet_services`, `iam_credentials_configuration`, `private_cert_configuration_root_ca`, `private_cert_configuration_intermediate_ca`, `private_cert_configuration_template`.
@@ -1939,8 +2514,8 @@ ibmcloud secrets-manager configuration --name NAME [--x-sm-accept-configuration-
 
 ```sh
 ibmcloud secrets-manager configuration \
-    --name=configuration-name \
-    --x-sm-accept-configuration-type=private_cert_configuration_root_ca
+    --name configuration-name \
+    --config-type private_cert_configuration_root_ca
 ```
 {: pre}
 
@@ -1950,7 +2525,7 @@ ibmcloud secrets-manager configuration \
 Update a configuration.
 
 ```sh
-ibmcloud secrets-manager configuration-update --name NAME [--api-key API-KEY] [--lets-encrypt-environment LETS-ENCRYPT-ENVIRONMENT] [--lets-encrypt-private-key LETS-ENCRYPT-PRIVATE-KEY] [--lets-encrypt-preferred-chain LETS-ENCRYPT-PREFERRED-CHAIN] [--cloud-internet-services-apikey CLOUD-INTERNET-SERVICES-APIKEY] [--cloud-internet-services-crn CLOUD-INTERNET-SERVICES-CRN] [--classic-infrastructure-username CLASSIC-INFRASTRUCTURE-USERNAME] [--classic-infrastructure-password CLASSIC-INFRASTRUCTURE-PASSWORD] [--max-ttl MAX-TTL] [--crl-expiry CRL-EXPIRY] [--crl-disable CRL-DISABLE] [--crl-distribution-points-encoded CRL-DISTRIBUTION-POINTS-ENCODED] [--issuing-certificates-urls-encoded ISSUING-CERTIFICATES-URLS-ENCODED] [--allowed-secret-groups ALLOWED-SECRET-GROUPS] [--ttl TTL] [--allow-localhost ALLOW-LOCALHOST] [--allowed-domains ALLOWED-DOMAINS] [--allowed-domains-template ALLOWED-DOMAINS-TEMPLATE] [--allow-bare-domains ALLOW-BARE-DOMAINS] [--allow-subdomains ALLOW-SUBDOMAINS] [--allow-glob-domains ALLOW-GLOB-DOMAINS] [--allow-any-name ALLOW-ANY-NAME] [--enforce-hostnames ENFORCE-HOSTNAMES] [--allow-ip-sans ALLOW-IP-SANS] [--allowed-uri-sans ALLOWED-URI-SANS] [--allowed-other-sans ALLOWED-OTHER-SANS] [--server-flag SERVER-FLAG] [--client-flag CLIENT-FLAG] [--code-signing-flag CODE-SIGNING-FLAG] [--email-protection-flag EMAIL-PROTECTION-FLAG] [--key-type KEY-TYPE] [--key-bits KEY-BITS] [--key-usage KEY-USAGE] [--ext-key-usage EXT-KEY-USAGE] [--ext-key-usage-oids EXT-KEY-USAGE-OIDS] [--use-csr-common-name USE-CSR-COMMON-NAME] [--use-csr-sans USE-CSR-SANS] [--ou OU] [--organization ORGANIZATION] [--country COUNTRY] [--locality LOCALITY] [--province PROVINCE] [--street-address STREET-ADDRESS] [--postal-code POSTAL-CODE] [--serial-number SERIAL-NUMBER] [--require-cn REQUIRE-CN] [--policy-identifiers POLICY-IDENTIFIERS] [--basic-constraints-valid-for-non-ca BASIC-CONSTRAINTS-VALID-FOR-NON-CA] [--not-before-duration NOT-BEFORE-DURATION] [--x-sm-accept-configuration-type X-SM-ACCEPT-CONFIGURATION-TYPE]
+ibmcloud secrets-manager configuration-update --name NAME [--api-key API-KEY] [--private-cert-max-ttl PRIVATE-CERT-MAX-TTL] [--private-cert-crl-expiry PRIVATE-CERT-CRL-EXPIRY] [--private-cert-crl-disabled PRIVATE-CERT-CRL-DISABLED] [--private-cert-crl-distribution-points-encoded PRIVATE-CERT-CRL-DISTRIBUTION-POINTS-ENCODED] [--private-cert-issuing-certificate-urls-encoded PRIVATE-CERT-ISSUING-CERTIFICATE-URLS-ENCODED] [--private-cert-allowed-secret-groups PRIVATE-CERT-ALLOWED-SECRET-GROUPS] [--private-cert-ttl PRIVATE-CERT-TTL] [--private-cert-allow-localhost PRIVATE-CERT-ALLOW-LOCALHOST] [--private-cert-allowed-domains PRIVATE-CERT-ALLOWED-DOMAINS] [--private-cert-allowed-domains-template PRIVATE-CERT-ALLOWED-DOMAINS-TEMPLATE] [--private-cert-allow-bare-domains PRIVATE-CERT-ALLOW-BARE-DOMAINS] [--private-cert-allow-subdomains PRIVATE-CERT-ALLOW-SUBDOMAINS] [--private-cert-allow-glob-domains PRIVATE-CERT-ALLOW-GLOB-DOMAINS] [--private-cert-allow-any-name PRIVATE-CERT-ALLOW-ANY-NAME] [--private-cert-enforce-hostname PRIVATE-CERT-ENFORCE-HOSTNAME] [--private-cert-allow-ip-sans PRIVATE-CERT-ALLOW-IP-SANS] [--private-cert-allowed-uri-sans PRIVATE-CERT-ALLOWED-URI-SANS] [--private-cert-allowed-other-sans PRIVATE-CERT-ALLOWED-OTHER-SANS] [--private-cert-server-flag PRIVATE-CERT-SERVER-FLAG] [--private-cert-client-flag PRIVATE-CERT-CLIENT-FLAG] [--private-cert-code-signing-flag PRIVATE-CERT-CODE-SIGNING-FLAG] [--private-cert-email-protection-flag PRIVATE-CERT-EMAIL-PROTECTION-FLAG] [--private-cert-private-key-type PRIVATE-CERT-PRIVATE-KEY-TYPE] [--private-cert-private-key-bits PRIVATE-CERT-PRIVATE-KEY-BITS] [--private-cert-key-usage PRIVATE-CERT-KEY-USAGE] [--private-cert-ext-key-usage PRIVATE-CERT-EXT-KEY-USAGE] [--private-cert-ext-key-usage-oids PRIVATE-CERT-EXT-KEY-USAGE-OIDS] [--private-cert-use-csr-common-name PRIVATE-CERT-USE-CSR-COMMON-NAME] [--private-cert-use-cse-sans PRIVATE-CERT-USE-CSE-SANS] [--private-cert-subject-organizational-unit PRIVATE-CERT-SUBJECT-ORGANIZATIONAL-UNIT] [--private-cert-subject-organization PRIVATE-CERT-SUBJECT-ORGANIZATION] [--private-cert-subject-country PRIVATE-CERT-SUBJECT-COUNTRY] [--private-cert-subject-locality PRIVATE-CERT-SUBJECT-LOCALITY] [--private-cert-subject-province PRIVATE-CERT-SUBJECT-PROVINCE] [--private-cert-subject-street-address PRIVATE-CERT-SUBJECT-STREET-ADDRESS] [--private-cert-subject-postal-code PRIVATE-CERT-SUBJECT-POSTAL-CODE] [--private-cert-requested-serial-number PRIVATE-CERT-REQUESTED-SERIAL-NUMBER] [--private-cert-require-cn PRIVATE-CERT-REQUIRE-CN] [--private-cert-policy-identifiers PRIVATE-CERT-POLICY-IDENTIFIERS] [--private-cert-basic-constraints-valid-for-non-ca PRIVATE-CERT-BASIC-CONSTRAINTS-VALID-FOR-NON-CA] [--private-cert-not-before-duration PRIVATE-CERT-NOT-BEFORE-DURATION] [--public-cert-lets-encrypt-environment PUBLIC-CERT-LETS-ENCRYPT-ENVIRONMENT] [--public-cert-lets-encrypt-private-key PUBLIC-CERT-LETS-ENCRYPT-PRIVATE-KEY] [--public-cert-lets-encrypt-preferred-chain PUBLIC-CERT-LETS-ENCRYPT-PREFERRED-CHAIN] [--public-cert-cloud-internet-services-apikey PUBLIC-CERT-CLOUD-INTERNET-SERVICES-APIKEY] [--cloud-internet-services-crn CLOUD-INTERNET-SERVICES-CRN] [--public-cert-classic-infrastructure-username PUBLIC-CERT-CLASSIC-INFRASTRUCTURE-USERNAME] [--public-cert-classic-infrastructure-password PUBLIC-CERT-CLASSIC-INFRASTRUCTURE-PASSWORD] [--x-sm-accept-configuration-type X-SM-ACCEPT-CONFIGURATION-TYPE]
 ```
 
 
@@ -1960,47 +2535,205 @@ ibmcloud secrets-manager configuration-update --name NAME [--api-key API-KEY] [-
 `--name` (string)
 :   The name of the configuration. Required.
 
-    The maximum length is `128` characters. The minimum length is `2` characters. The value must match regular expression `/^[A-Za-z0-9][A-Za-z0-9]*(?:_*-*\\.*[A-Za-z0-9]+)*$/`.
+    The maximum length is `128` characters. The minimum length is `2` characters. The value must match regular expression `/(.*?)/`.
 
 `--configuration-patch` (generic map)
 :   JSON Merge-Patch content for update_configuration.
 
     Provide a JSON string option or specify a JSON file to read from by providing a filepath option that begins with a `@`, e.g. `--configuration-patch=@path/to/file.json`.
 
-`--x-sm-accept-configuration-type` (string)
+`--config-type` (string)
 :   The configuration type of this configuration - use this header to resolve 300 error responses.
 
     Allowable values are: `public_cert_configuration_ca_lets_encrypt`, `public_cert_configuration_dns_classic_infrastructure`, `public_cert_configuration_dns_cloud_internet_services`, `iam_credentials_configuration`, `private_cert_configuration_root_ca`, `private_cert_configuration_intermediate_ca`, `private_cert_configuration_template`.
 
 `--api-key` (string)
-:   The API key that is generated for this secret.
-
-After the secret reaches the end of its lease (see the `ttl` field), the API key is deleted automatically. If you want to continue to use the same API key for future read operations, see the `reuse_api_key` field.
+:   An IBM Cloud API key that can create and manage service IDs. The API key must be assigned the Editor platform role on the Access Groups Service and the Operator platform role on the IAM Identity Service.  For more information, see the [docs](/docs/secrets-manager?topic=secrets-manager-configure-iam-engine).
 
     The maximum length is `60` characters. The minimum length is `5` characters. The value must match regular expression `/^(?:[A-Za-z0-9_\\-]{4})*(?:[A-Za-z0-9_\\-]{2}==|[A-Za-z0-9_\\-]{3}=)?$/`.
 
-`--lets-encrypt-environment` (string)
+`--private-cert-max-ttl` (string)
+:   The maximum time-to-live (TTL) for certificates that are created by this CA.
+
+    The maximum length is `10` characters. The minimum length is `2` characters. The value must match regular expression `/^[0-9]+[s,m,h,d]{0,1}$/`.
+
+`--private-cert-crl-expiry` (string)
+:   The time until the certificate revocation list (CRL) expires.
+
+    The maximum length is `10` characters. The minimum length is `2` characters. The value must match regular expression `/^[0-9]+[s,m,h,d]{0,1}$/`.
+
+`--private-cert-crl-disabled` (bool)
+:   This field disables or enables certificate revocation list (CRL) building.
+
+`--private-cert-crl-distribution-points-encoded` (bool)
+:   This field determines whether to encode the certificate revocation list (CRL) distribution points in the certificates that are issued by this certificate authority.
+
+`--private-cert-issuing-certificate-urls-encoded` (bool)
+:   This field determines whether to encode the URL of the issuing certificate in the certificates that are issued by this certificate authority.
+
+`--private-cert-allowed-secret-groups` (string)
+:   This field scopes the creation of private certificates to only the secret groups that you specify.
+
+    The maximum length is `1024` characters. The minimum length is `2` characters. The value must match regular expression `/(.*?)/`.
+
+`--private-cert-ttl` (string)
+:   The requested time-to-live (TTL) for certificates that are created by this CA.
+
+    The maximum length is `10` characters. The minimum length is `2` characters. The value must match regular expression `/^[0-9]+[s,m,h,d]{0,1}$/`.
+
+`--private-cert-allow-localhost` (bool)
+:   This field indicates whether to allow `localhost` to be included as one of the requested common names.
+
+`--private-cert-allowed-domains` ([]string)
+:   The domains to define for the certificate template. This property is used along with the `allow_bare_domains` and `allow_subdomains` options.
+
+    The list items must match regular expression `/(.*?)/`. The maximum length is `100` items. The minimum length is `0` items.
+
+`--private-cert-allowed-domains-template` (bool)
+:   This field indicates whether to allow the domains that are supplied in the `allowed_domains` field to contain access control list (ACL) templates.
+
+`--private-cert-allow-bare-domains` (bool)
+:   This field indicates whether to allow clients to request private certificates that match the value of the actual domains on the final certificate.
+
+`--private-cert-allow-subdomains` (bool)
+:   This field indicates whether to allow clients to request private certificates with common names (CN) that are subdomains of the CNs that are allowed by the other certificate template options.
+
+`--private-cert-allow-glob-domains` (bool)
+:   This field indicates whether to allow glob patterns in the names that are specified in the `allowed_domains` field.
+
+`--private-cert-allow-any-name` (bool)
+:   This field indicates whether to allow clients to request a private certificate that matches any common name.
+
+`--private-cert-enforce-hostname` (bool)
+:   This field indicates whether to enforce only valid hostnames for common names, DNS Subject Alternative Names, and the host section of email addresses.
+
+`--private-cert-allow-ip-sans` (bool)
+:   This field indicates whether to allow clients to request a private certificate with IP Subject Alternative Names.
+
+`--private-cert-allowed-uri-sans` ([]string)
+:   The URI Subject Alternative Names to allow for private certificates.
+
+    The list items must match regular expression `/(.*?)/`. The maximum length is `100` items. The minimum length is `0` items.
+
+`--private-cert-allowed-other-sans` ([]string)
+:   The custom Object Identifier (OID) or UTF8-string Subject Alternative Names (SANs) to allow for private certificates.
+
+    The list items must match regular expression `/(.*?)/`. The maximum length is `100` items. The minimum length is `0` items.
+
+`--private-cert-server-flag` (bool)
+:   This field indicates whether private certificates are flagged for server use.
+
+`--private-cert-client-flag` (bool)
+:   This field indicates whether private certificates are flagged for client use.
+
+`--private-cert-code-signing-flag` (bool)
+:   This field indicates whether private certificates are flagged for code signing use.
+
+`--private-cert-email-protection-flag` (bool)
+:   This field indicates whether private certificates are flagged for email protection use.
+
+`--private-cert-private-key-type` (string)
+:   The type of private key to generate.
+
+    Allowable values are: `rsa`, `ec`.
+
+`--private-cert-private-key-bits` (int64)
+:   The number of bits to use to generate the private key.
+
+`--private-cert-key-usage` ([]string)
+:   The allowed key usage constraint to define for private certificates.
+
+    The list items must match regular expression `/^[a-zA-Z]+$/`. The maximum length is `100` items. The minimum length is `0` items.
+
+`--private-cert-ext-key-usage` ([]string)
+:   The allowed extended key usage constraint on private certificates.
+
+    The list items must match regular expression `/^[a-zA-Z]+$/`. The maximum length is `100` items. The minimum length is `0` items.
+
+`--private-cert-ext-key-usage-oids` ([]string)
+:   A list of extended key usage Object Identifiers (OIDs).
+
+    The list items must match regular expression `/(.*?)/`. The maximum length is `100` items. The minimum length is `0` items.
+
+`--private-cert-use-csr-common-name` (bool)
+:   this field determines whether to use the common name (CN) from a certificate signing request (CSR).
+
+`--private-cert-use-cse-sans` (bool)
+:   this field determines whether to use the Subject Alternative Names (SANs) from a certificate signing request (CSR).
+
+`--private-cert-subject-organizational-unit` ([]string)
+:   The Organizational Unit (OU) values to define in the subject field of the resulting certificate.
+
+    The list items must match regular expression `/(.*?)/`. The maximum length is `10` items. The minimum length is `0` items.
+
+`--private-cert-subject-organization` ([]string)
+:   The Organization (O) values to define in the subject field of the resulting certificate.
+
+    The list items must match regular expression `/(.*?)/`. The maximum length is `10` items. The minimum length is `0` items.
+
+`--private-cert-subject-country` ([]string)
+:   The Country (C) values to define in the subject field of the resulting certificate.
+
+    The list items must match regular expression `/(.*?)/`. The maximum length is `10` items. The minimum length is `0` items.
+
+`--private-cert-subject-locality` ([]string)
+:   The Locality (L) values to define in the subject field of the resulting certificate.
+
+    The list items must match regular expression `/(.*?)/`. The maximum length is `10` items. The minimum length is `0` items.
+
+`--private-cert-subject-province` ([]string)
+:   The Province (ST) values to define in the subject field of the resulting certificate.
+
+    The list items must match regular expression `/(.*?)/`. The maximum length is `10` items. The minimum length is `0` items.
+
+`--private-cert-subject-street-address` ([]string)
+:   The street address values to define in the subject field of the resulting certificate.
+
+    The list items must match regular expression `/(.*?)/`. The maximum length is `10` items. The minimum length is `0` items.
+
+`--private-cert-subject-postal-code` ([]string)
+:   The postal code values to define in the subject field of the resulting certificate.
+
+    The list items must match regular expression `/(.*?)/`. The maximum length is `10` items. The minimum length is `0` items.
+
+`--private-cert-requested-serial-number` (string)
+:   This field is deprecated. You can ignore its value.
+
+    The maximum length is `64` characters. The minimum length is `32` characters. The value must match regular expression `/[^a-fA-F0-9]/`.
+
+`--private-cert-require-cn` (bool)
+:   This field indicates whether to require a common name to create a private certificate.
+
+`--private-cert-policy-identifiers` ([]string)
+:   A list of policy Object Identifiers (OIDs).
+
+    The list items must match regular expression `/(.*?)/`. The maximum length is `100` items. The minimum length is `0` items.
+
+`--private-cert-basic-constraints-valid-for-non-ca` (bool)
+:   This field indicates whether to mark the Basic Constraints extension of an issued private certificate as valid for non-CA certificates.
+
+`--private-cert-not-before-duration` (string)
+:   The duration in seconds by which to backdate the `not_before` property of an issued private certificate.
+
+    The maximum length is `10` characters. The minimum length is `2` characters. The value must match regular expression `/^[0-9]+[s,m,h,d]{0,1}$/`.
+
+`--public-cert-lets-encrypt-environment` (string)
 :   The configuration of the Let's Encrypt CA environment.
 
     Allowable values are: `production`, `staging`.
 
-`--lets-encrypt-private-key` (string)
+`--public-cert-lets-encrypt-private-key` (string)
 :   The PEM-encoded private key of your Let's Encrypt account.
 
     The maximum length is `100000` characters. The minimum length is `50` characters. The value must match regular expression `/(^-----BEGIN PRIVATE KEY-----.*?)|(^-----BEGIN RSA PRIVATE KEY-----.*?)/`.
 
-`--lets-encrypt-preferred-chain` (string)
+`--public-cert-lets-encrypt-preferred-chain` (string)
 :   The preferred chain with an issuer that matches this Subject Common Name.
 
     The maximum length is `30` characters. The minimum length is `2` characters. The value must match regular expression `/(.*?)/`.
 
-`--cloud-internet-services-apikey` (string)
+`--public-cert-cloud-internet-services-apikey` (string)
 :   An IBM Cloud API key that can to list domains in your Cloud Internet Services instance.
-
-To grant Secrets Manager the ability to view the Cloud Internet Services instance and all of its domains, the API key must be assigned the Reader service role on Internet Services (`internet-svcs`).
-
-If you need to manage specific domains, you can assign the Manager role. For production environments, it is recommended that you assign the Reader access role, and then use the
-[IAM Policy Management API](https://cloud.ibm.com/apidocs/iam-policy-management#create-policy) to control specific domains. For more information, see the [docs](/docs/secrets-manager?topic=secrets-manager-prepare-order-certificates#authorize-specific-domains).
 
     The maximum length is `128` characters. The minimum length is `4` characters. The value must match regular expression `/(.*?)/`.
 
@@ -2009,236 +2742,24 @@ If you need to manage specific domains, you can assign the Manager role. For pro
 
     The maximum length is `512` characters. The minimum length is `9` characters. The value must match regular expression `/^crn:v[0-9](:([A-Za-z0-9-._~!$&'()*+,;=@\/]|%[0-9A-Z]{2})*){8}$/`.
 
-`--classic-infrastructure-username` (string)
+`--public-cert-classic-infrastructure-username` (string)
 :   The username that is associated with your classic infrastructure account.
 
-In most cases, your classic infrastructure username is your `<account_id>_<email_address>`. For more information, see the [docs](/docs/account?topic=account-classic_keys).
-
     The maximum length is `128` characters. The minimum length is `2` characters. The value must match regular expression `/(.*?)/`.
 
-`--classic-infrastructure-password` (string)
+`--public-cert-classic-infrastructure-password` (string)
 :   Your classic infrastructure API key.
 
-For information about viewing and accessing your classic infrastructure API key, see the [docs](/docs/account?topic=account-classic_keys).
-
     The maximum length is `128` characters. The minimum length is `2` characters. The value must match regular expression `/(.*?)/`.
-
-`--max-ttl` (string)
-:   The maximum time-to-live (TTL) for certificates that are created by this CA.
-
-The value can be supplied as a string representation of a duration in hours, for example '8760h'. In the API response, this value is returned in seconds (integer).
-
-Minimum value is one hour (`1h`). Maximum value is 100 years (`876000h`).
-
-    The maximum length is `10` characters. The minimum length is `2` characters. The value must match regular expression `/^[0-9]+[s,m,h,d]{0,1}$/`.
-
-`--crl-expiry` (string)
-:   The time until the certificate revocation list (CRL) expires.
-
-The value can be supplied as a string representation of a duration in hours, such as `48h`. The default is 72 hours. In the API response, this value is returned in seconds (integer).
-
-**Note:** The CRL is rotated automatically before it expires.
-
-    The maximum length is `10` characters. The minimum length is `2` characters. The value must match regular expression `/^[0-9]+[s,m,h,d]{0,1}$/`.
-
-`--crl-disable` (bool)
-:   This field disables or enables certificate revocation list (CRL) building.
-
-If CRL building is disabled, a signed but zero-length CRL is returned when you're downloading the CRL. If CRL building is enabled, it rebuilds the CRL.
-
-`--crl-distribution-points-encoded` (bool)
-:   This field determines whether to encode the certificate revocation list (CRL) distribution points in the certificates that are issued by this certificate authority.
-
-`--issuing-certificates-urls-encoded` (bool)
-:   This field determines whether to encode the URL of the issuing certificate in the certificates that are issued by this certificate authority.
-
-`--allowed-secret-groups` (string)
-:   This field scopes the creation of private certificates to only the secret groups that you specify.
-
-This field can be supplied as a comma-delimited list of secret group IDs.
-
-    The maximum length is `1024` characters. The minimum length is `2` characters. The value must match regular expression `/(.*?)/`.
-
-`--ttl` (string)
-:   The requested time-to-live (TTL) for certificates that are created by this CA. This field's value can't be longer than the `max_ttl` limit.
-
-The value can be supplied as a string representation of a duration in hours, for example '8760h'. In the API response, this value is returned in seconds (integer).
-
-    The maximum length is `10` characters. The minimum length is `2` characters. The value must match regular expression `/^[0-9]+[s,m,h,d]{0,1}$/`.
-
-`--allow-localhost` (bool)
-:   This field indicates whether to allow `localhost` to be included as one of the requested common names.
-
-`--allowed-domains` ([]string)
-:   The domains to define for the certificate template. This property is used along with the `allow_bare_domains` and `allow_subdomains` options.
-
-    The list items must match regular expression `/(.*?)/`. The maximum length is `100` items. The minimum length is `0` items.
-
-`--allowed-domains-template` (bool)
-:   This field indicates whether to allow the domains that are supplied in the `allowed_domains` field to contain access control list (ACL) templates.
-
-`--allow-bare-domains` (bool)
-:   This field indicates whether to allow clients to request private certificates that match the value of the actual domains on the final certificate.
-
-For example, if you specify `example.com` in the `allowed_domains` field, you grant clients the ability to request a certificate that contains the name `example.com` as one of the DNS values on the final certificate.
-
-**Important:** In some scenarios, allowing bare domains can be considered a security risk.
-
-`--allow-subdomains` (bool)
-:   This field indicates whether to allow clients to request private certificates with common names (CN) that are subdomains of the CNs that are allowed by the other certificate template options. This includes wildcard subdomains.
-
-For example, if `allowed_domains` has a value of `example.com` and `allow_subdomains`is set to `true`, then the following subdomains are allowed: `foo.example.com`, `bar.example.com`, `*.example.com`.
-
-**Note:** This field is redundant if you use the `allow_any_name` option.
-
-`--allow-glob-domains` (bool)
-:   This field indicates whether to allow glob patterns, for example, `ftp*.example.com`, in the names that are specified in the `allowed_domains` field.
-
-If set to `true`, clients are allowed to request private certificates with names that match the glob patterns.
-
-`--allow-any-name` (bool)
-:   This field indicates whether to allow clients to request a private certificate that matches any common name.
-
-`--enforce-hostnames` (bool)
-:   This field indicates whether to enforce only valid hostnames for common names, DNS Subject Alternative Names, and the host section of email addresses.
-
-`--allow-ip-sans` (bool)
-:   This field indicates whether to allow clients to request a private certificate with IP Subject Alternative Names.
-
-`--allowed-uri-sans` ([]string)
-:   The URI Subject Alternative Names to allow for private certificates.
-
-Values can contain glob patterns, for example `spiffe://hostname/_*`.
-
-    The list items must match regular expression `/(.*?)/`. The maximum length is `100` items. The minimum length is `0` items.
-
-`--allowed-other-sans` ([]string)
-:   The custom Object Identifier (OID) or UTF8-string Subject Alternative Names (SANs) to allow for private certificates.
-
-The format for each element in the list is the same as OpenSSL: `<oid>:<type>:<value>` where the current valid type is `UTF8`. To allow any value for an OID, use `*` as its value. Alternatively, specify a single `*` to allow any `other_sans` input.
-
-    The list items must match regular expression `/(.*?)/`. The maximum length is `100` items. The minimum length is `0` items.
-
-`--server-flag` (bool)
-:   This field indicates whether private certificates are flagged for server use.
-
-`--client-flag` (bool)
-:   This field indicates whether private certificates are flagged for client use.
-
-`--code-signing-flag` (bool)
-:   This field indicates whether private certificates are flagged for code signing use.
-
-`--email-protection-flag` (bool)
-:   This field indicates whether private certificates are flagged for email protection use.
-
-`--key-type` (string)
-:   The type of private key to generate.
-
-    Allowable values are: `rsa`, `ec`.
-
-`--key-bits` (int64)
-:   The number of bits to use to generate the private key.
-
-Allowable values for RSA keys are: `2048` and `4096`. Allowable values for EC keys are: `224`, `256`, `384`, and `521`. The default for RSA keys is `2048`. The default for EC keys is `256`.
-
-`--key-usage` ([]string)
-:   The allowed key usage constraint to define for private certificates.
-
-You can find valid values in the [Go x509 package documentation](https://pkg.go.dev/crypto/x509#KeyUsage). Omit the `KeyUsage` part of the value. Values are not case-sensitive. To specify no key usage constraints, set this field to an empty list.
-
-    The list items must match regular expression `/^[a-zA-Z]+$/`. The maximum length is `100` items. The minimum length is `0` items.
-
-`--ext-key-usage` ([]string)
-:   The allowed extended key usage constraint on private certificates.
-
-You can find valid values in the [Go x509 package documentation](https://golang.org/pkg/crypto/x509/#ExtKeyUsage). Omit the `ExtKeyUsage` part of the value. Values are not case-sensitive. To specify no key usage constraints, set this field to an empty list.
-
-    The list items must match regular expression `/^[a-zA-Z]+$/`. The maximum length is `100` items. The minimum length is `0` items.
-
-`--ext-key-usage-oids` ([]string)
-:   A list of extended key usage Object Identifiers (OIDs).
-
-    The list items must match regular expression `/(.*?)/`. The maximum length is `100` items. The minimum length is `0` items.
-
-`--use-csr-common-name` (bool)
-:   When used with the `private_cert_configuration_action_sign_csr` action, this field determines whether to use the common name (CN) from a certificate signing request (CSR) instead of the CN that is included in the data of the certificate.
-
-Does not include any requested Subject Alternative Names (SANs) in the CSR. To use the alternative names, include the `use_csr_sans` property.
-
-`--use-csr-sans` (bool)
-:   When used with the `private_cert_configuration_action_sign_csr` action, this field determines whether to use the Subject Alternative Names
-(SANs) from a certificate signing request (CSR) instead of the SANs that are included in the data of the certificate.
-
-This field does not include the common name in the CSR. To use the common name, include the `use_csr_common_name` property.
-
-`--ou` ([]string)
-:   The Organizational Unit (OU) values to define in the subject field of the resulting certificate.
-
-    The list items must match regular expression `/(.*?)/`. The maximum length is `10` items. The minimum length is `0` items.
-
-`--organization` ([]string)
-:   The Organization (O) values to define in the subject field of the resulting certificate.
-
-    The list items must match regular expression `/(.*?)/`. The maximum length is `10` items. The minimum length is `0` items.
-
-`--country` ([]string)
-:   The Country (C) values to define in the subject field of the resulting certificate.
-
-    The list items must match regular expression `/(.*?)/`. The maximum length is `10` items. The minimum length is `0` items.
-
-`--locality` ([]string)
-:   The Locality (L) values to define in the subject field of the resulting certificate.
-
-    The list items must match regular expression `/(.*?)/`. The maximum length is `10` items. The minimum length is `0` items.
-
-`--province` ([]string)
-:   The Province (ST) values to define in the subject field of the resulting certificate.
-
-    The list items must match regular expression `/(.*?)/`. The maximum length is `10` items. The minimum length is `0` items.
-
-`--street-address` ([]string)
-:   The street address values to define in the subject field of the resulting certificate.
-
-    The list items must match regular expression `/(.*?)/`. The maximum length is `10` items. The minimum length is `0` items.
-
-`--postal-code` ([]string)
-:   The postal code values to define in the subject field of the resulting certificate.
-
-    The list items must match regular expression `/(.*?)/`. The maximum length is `10` items. The minimum length is `0` items.
-
-`--serial-number` (string)
-:   The serial number to assign to the generated certificate. To assign a random serial number, you can omit this field.
-
-    The maximum length is `64` characters. The minimum length is `32` characters. The value must match regular expression `/[^a-fA-F0-9]/`.
-
-`--require-cn` (bool)
-:   This field indicates whether to require a common name to create a private certificate.
-
-By default, a common name is required to generate a certificate. To make the `common_name` field optional, set the `require_cn` option to `false`.
-
-`--policy-identifiers` ([]string)
-:   A list of policy Object Identifiers (OIDs).
-
-    The list items must match regular expression `/(.*?)/`. The maximum length is `100` items. The minimum length is `0` items.
-
-`--basic-constraints-valid-for-non-ca` (bool)
-:   This field indicates whether to mark the Basic Constraints extension of an issued private certificate as valid for non-CA certificates.
-
-`--not-before-duration` (string)
-:   The duration in seconds by which to backdate the `not_before` property of an issued private certificate.
-
-The value can be supplied as a string representation of a duration, such as `30s`. In the API response, this value is returned in seconds (integer).
-
-    The maximum length is `10` characters. The minimum length is `2` characters. The value must match regular expression `/^[0-9]+[s,m,h,d]{0,1}$/`.
 
 #### Example
 {: #secrets-manager-configuration-update-examples}
 
 ```sh
 ibmcloud secrets-manager configuration-update \
-    --name=configuration-name \
-    --x-sm-accept-configuration-type=private_cert_configuration_root_ca \
-    --api-key=RmnPBn6n1dzoo0v3kyznKEpg0WzdTpW9lW7FtKa017_u
+    --name configuration-name \
+    --config-type private_cert_configuration_root_ca \
+    --api-key RmnPBn6n1dzoo0v3kyznKEpg0WzdTpW9lW7FtKa017_u
 ```
 {: pre}
 
@@ -2248,7 +2769,7 @@ ibmcloud secrets-manager configuration-update \
 Delete a configuration by specifying its name.
 
 ```sh
-ibmcloud secrets-manager configuration-delete --name NAME [--x-sm-accept-configuration-type X-SM-ACCEPT-CONFIGURATION-TYPE]
+ibmcloud secrets-manager configuration-delete --name NAME [--config-type CONFIG-TYPE]
 ```
 
 
@@ -2258,9 +2779,9 @@ ibmcloud secrets-manager configuration-delete --name NAME [--x-sm-accept-configu
 `--name` (string)
 :   The name of the configuration. Required.
 
-    The maximum length is `128` characters. The minimum length is `2` characters. The value must match regular expression `/^[A-Za-z0-9][A-Za-z0-9]*(?:_*-*\\.*[A-Za-z0-9]+)*$/`.
+    The maximum length is `128` characters. The minimum length is `2` characters. The value must match regular expression `/(.*?)/`.
 
-`--x-sm-accept-configuration-type` (string)
+`--config-type` (string)
 :   The configuration type of this configuration - use this header to resolve 300 error responses.
 
     Allowable values are: `public_cert_configuration_ca_lets_encrypt`, `public_cert_configuration_dns_classic_infrastructure`, `public_cert_configuration_dns_cloud_internet_services`, `iam_credentials_configuration`, `private_cert_configuration_root_ca`, `private_cert_configuration_intermediate_ca`, `private_cert_configuration_template`.
@@ -2270,8 +2791,8 @@ ibmcloud secrets-manager configuration-delete --name NAME [--x-sm-accept-configu
 
 ```sh
 ibmcloud secrets-manager configuration-delete \
-    --name=configuration-name \
-    --x-sm-accept-configuration-type=private_cert_configuration_root_ca
+    --name configuration-name \
+    --config-type private_cert_configuration_root_ca
 ```
 {: pre}
 
@@ -2287,7 +2808,7 @@ Create a configuration action. This operation supports the following actions:
 - `private_cert_configuration_action_rotate_crl`: Rotate the certificate revocation list (CRL) of an intermediate certificate authority.
 
 ```sh
-ibmcloud secrets-manager configuration-action-create --name NAME --config-action-prototype CONFIG-ACTION-PROTOTYPE [--x-sm-accept-configuration-type X-SM-ACCEPT-CONFIGURATION-TYPE]
+ibmcloud secrets-manager configuration-action-create --name NAME [--config-action-prototype CONFIG-ACTION-PROTOTYPE] [--config-type CONFIG-TYPE]
 ```
 
 
@@ -2297,26 +2818,172 @@ ibmcloud secrets-manager configuration-action-create --name NAME --config-action
 `--name` (string)
 :   The name of the configuration. Required.
 
-    The maximum length is `128` characters. The minimum length is `2` characters. The value must match regular expression `/^[A-Za-z0-9][A-Za-z0-9]*(?:_*-*\\.*[A-Za-z0-9]+)*$/`.
+    The maximum length is `128` characters. The minimum length is `2` characters. The value must match regular expression `/(.*?)/`.
 
 `--config-action-prototype` ([`ConfigurationActionPrototype`](#cli-configuration-action-prototype-example-schema))
-:   The request body to specify the properties of the action to create a configuration. Required.
+:   The request body to specify the properties of the action to create a configuration. This JSON option can instead be provided by setting individual fields with other options. It is mutually exclusive with those options.
 
     Provide a JSON string option or specify a JSON file to read from by providing a filepath option that begins with a `@`, e.g. `--config-action-prototype=@path/to/file.json`.
 
-`--x-sm-accept-configuration-type` (string)
+`--config-type` (string)
 :   The configuration type of this configuration - use this header to resolve 300 error responses.
 
     Allowable values are: `public_cert_configuration_ca_lets_encrypt`, `public_cert_configuration_dns_classic_infrastructure`, `public_cert_configuration_dns_cloud_internet_services`, `iam_credentials_configuration`, `private_cert_configuration_root_ca`, `private_cert_configuration_intermediate_ca`, `private_cert_configuration_template`.
 
-#### Example
+`--config-action-action-type` (string)
+:   The type of configuration action. This option provides a value for a sub-field of the JSON option 'config-action-prototype'. It is mutually exclusive with that option.
+
+    Allowable values are: `private_cert_configuration_action_rotate_crl`, `private_cert_configuration_action_sign_intermediate`, `private_cert_configuration_action_sign_csr`, `private_cert_configuration_action_set_signed`, `private_cert_configuration_action_revoke_ca_certificate`.
+
+`--private-cert-common-name` (string)
+:   The Common Name (CN) represents the server name that is protected by the SSL certificate. This option provides a value for a sub-field of the JSON option 'config-action-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `128` characters. The minimum length is `4` characters. The value must match regular expression `/(.*?)/`.
+
+`--private-cert-alt-names` ([]string)
+:   With the Subject Alternative Name field, you can specify additional hostnames to be protected by a single SSL certificate. This option provides a value for a sub-field of the JSON option 'config-action-prototype'. It is mutually exclusive with that option.
+
+    The list items must match regular expression `/^(.*?)$/`. The maximum length is `99` items. The minimum length is `0` items.
+
+`--private-cert-ip-sans` (string)
+:   The IP Subject Alternative Names to define for the CA certificate, in a comma-delimited list. This option provides a value for a sub-field of the JSON option 'config-action-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `2048` characters. The minimum length is `2` characters. The value must match regular expression `/(.*?)/`.
+
+`--private-cert-uri-sans` (string)
+:   The URI Subject Alternative Names to define for the CA certificate, in a comma-delimited list. This option provides a value for a sub-field of the JSON option 'config-action-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `2048` characters. The minimum length is `2` characters. The value must match regular expression `/(.*?)/`.
+
+`--private-cert-other-sans` ([]string)
+:   The custom Object Identifier (OID) or UTF8-string Subject Alternative Names to define for the CA certificate. This option provides a value for a sub-field of the JSON option 'config-action-prototype'. It is mutually exclusive with that option.
+
+    The list items must match regular expression `/(.*?)/`. The maximum length is `100` items. The minimum length is `0` items.
+
+`--private-cert-ttl` (string)
+:   The time-to-live (TTL) to assign to a private certificate. This option provides a value for a sub-field of the JSON option 'config-action-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `10` characters. The minimum length is `2` characters. The value must match regular expression `/^[0-9]+[s,m,h,d]{0,1}$/`.
+
+`--private-cert-format` (string)
+:   The format of the returned data. This option provides a value for a sub-field of the JSON option 'config-action-prototype'. It is mutually exclusive with that option.
+
+    Allowable values are: `pem`, `pem_bundle`.
+
+`--private-cert-max-path-length` (int64)
+:   The maximum path length to encode in the generated certificate. `-1` means no limit. This option provides a value for a sub-field of the JSON option 'config-action-prototype'. It is mutually exclusive with that option.
+
+`--private-cert-exclude-cn-from-sans` (bool)
+:   This parameter controls whether the common name is excluded from Subject Alternative Names (SANs). This option provides a value for a sub-field of the JSON option 'config-action-prototype'. It is mutually exclusive with that option.
+
+`--private-cert-permitted-dns-domains` ([]string)
+:   The allowed DNS domains or subdomains for the certificates that are to be signed and issued by this CA certificate. This option provides a value for a sub-field of the JSON option 'config-action-prototype'. It is mutually exclusive with that option.
+
+    The list items must match regular expression `/(.*?)/`. The maximum length is `100` items. The minimum length is `0` items.
+
+`--config-action-use-csr-values` (bool)
+:   This field indicates whether to use values from a certificate signing request (CSR) to complete a `private_cert_configuration_action_sign_csr` action. If it is set to `true`, then:
+
+1) Subject information, including names and alternate names, are preserved from the CSR rather than by using the values that are provided in the other parameters to this operation.
+
+2) Any key usage, for example, non-repudiation, that is requested in the CSR are added to the basic set of key usages used for CA certificates that are signed by the intermediate authority.
+
+3) Extensions that are requested in the CSR are copied into the issued private certificate. This option provides a value for a sub-field of the JSON option 'config-action-prototype'. It is mutually exclusive with that option.
+
+`--private-cert-subject-organizational-unit` ([]string)
+:   The Organizational Unit (OU) values to define in the subject field of the resulting certificate. This option provides a value for a sub-field of the JSON option 'config-action-prototype'. It is mutually exclusive with that option.
+
+    The list items must match regular expression `/(.*?)/`. The maximum length is `10` items. The minimum length is `0` items.
+
+`--private-cert-subject-organization` ([]string)
+:   The Organization (O) values to define in the subject field of the resulting certificate. This option provides a value for a sub-field of the JSON option 'config-action-prototype'. It is mutually exclusive with that option.
+
+    The list items must match regular expression `/(.*?)/`. The maximum length is `10` items. The minimum length is `0` items.
+
+`--private-cert-subject-country` ([]string)
+:   The Country (C) values to define in the subject field of the resulting certificate. This option provides a value for a sub-field of the JSON option 'config-action-prototype'. It is mutually exclusive with that option.
+
+    The list items must match regular expression `/(.*?)/`. The maximum length is `10` items. The minimum length is `0` items.
+
+`--private-cert-subject-locality` ([]string)
+:   The Locality (L) values to define in the subject field of the resulting certificate. This option provides a value for a sub-field of the JSON option 'config-action-prototype'. It is mutually exclusive with that option.
+
+    The list items must match regular expression `/(.*?)/`. The maximum length is `10` items. The minimum length is `0` items.
+
+`--private-cert-subject-province` ([]string)
+:   The Province (ST) values to define in the subject field of the resulting certificate. This option provides a value for a sub-field of the JSON option 'config-action-prototype'. It is mutually exclusive with that option.
+
+    The list items must match regular expression `/(.*?)/`. The maximum length is `10` items. The minimum length is `0` items.
+
+`--private-cert-subject-street-address` ([]string)
+:   The street address values to define in the subject field of the resulting certificate. This option provides a value for a sub-field of the JSON option 'config-action-prototype'. It is mutually exclusive with that option.
+
+    The list items must match regular expression `/(.*?)/`. The maximum length is `10` items. The minimum length is `0` items.
+
+`--private-cert-subject-postal-code` ([]string)
+:   The postal code values to define in the subject field of the resulting certificate. This option provides a value for a sub-field of the JSON option 'config-action-prototype'. It is mutually exclusive with that option.
+
+    The list items must match regular expression `/(.*?)/`. The maximum length is `10` items. The minimum length is `0` items.
+
+`--private-cert-serial-number` (string)
+:    The requested value for the `serialNumber` (https://datatracker.ietf.org/doc/html/rfc4519#section-2.31) attribute that is in the certificate's distinguished name (DN).  This option provides a value for a sub-field of the JSON option 'config-action-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `64` characters. The minimum length is `32` characters. The value must match regular expression `/[^a-fA-F0-9]/`.
+
+`--private-cert-csr` (string)
+:   The certificate signing request. This option provides a value for a sub-field of the JSON option 'config-action-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `4096` characters. The minimum length is `2` characters. The value must match regular expression `/^(-{5}BEGIN.+?-{5}[\\s\\S]+-{5}END.+?-{5}[\\s]*)$/`.
+
+`--config-action-intermediate-certificate-authority` (string)
+:   The unique name of your configuration. This option provides a value for a sub-field of the JSON option 'config-action-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `128` characters. The minimum length is `2` characters. The value must match regular expression `/(.*?)/`.
+
+`--imported-cert-certificate` (string)
+:   The PEM-encoded contents of your certificate. This option provides a value for a sub-field of the JSON option 'config-action-prototype'. It is mutually exclusive with that option.
+
+    The maximum length is `100000` characters. The minimum length is `50` characters. The value must match regular expression `/(-{5}BEGIN.+?-{5}[\\s\\S]+-{5}END.+?-{5}[\\s]*)/`.
+
+#### Examples
 {: #secrets-manager-configuration-action-create-examples}
 
 ```sh
 ibmcloud secrets-manager configuration-action-create \
-    --name=configuration-name \
-    --config-action-prototype='{"action_type": "private_cert_configuration_action_rotate_crl"}' \
-    --x-sm-accept-configuration-type=private_cert_configuration_root_ca
+    --name configuration-name \
+    --config-action-prototype '{"action_type": "private_cert_configuration_action_rotate_crl"}' \
+    --config-type private_cert_configuration_root_ca
+```
+{: pre}
+
+Alternatively, granular options are available for the sub-fields of JSON string options:
+```sh
+ibmcloud secrets-manager configuration-action-create \
+    --name configuration-name \
+    --config-type private_cert_configuration_root_ca \
+    --config-action-action-type private_cert_configuration_action_rotate_crl \
+    --private-cert-common-name localhost \
+    --private-cert-alt-names s1.example.com,*.s2.example.com \
+    --private-cert-ip-sans '1.1.1.1, 2.2.2.2' \
+    --private-cert-uri-sans exampleString \
+    --private-cert-other-sans 2.5.4.5;UTF8:*.example.com \
+    --private-cert-ttl 12h \
+    --private-cert-format pem \
+    --private-cert-max-path-length 38 \
+    --private-cert-exclude-cn-from-sans true \
+    --private-cert-permitted-dns-domains exampleString \
+    --config-action-use-csr-values true \
+    --private-cert-subject-organizational-unit exampleString \
+    --private-cert-subject-organization exampleString \
+    --private-cert-subject-country exampleString \
+    --private-cert-subject-locality exampleString \
+    --private-cert-subject-province exampleString \
+    --private-cert-subject-street-address exampleString \
+    --private-cert-subject-postal-code exampleString \
+    --private-cert-serial-number d9:be:fe:35:ba:09:42:b5:35:ba:09:42:b5 \
+    --private-cert-csr exampleString \
+    --config-action-intermediate-certificate-authority my-secret-engine-config \
+    --imported-cert-certificate exampleString
 ```
 {: pre}
 
@@ -2360,9 +3027,9 @@ ibmcloud secrets-manager notifications-registration-create --event-notifications
 
 ```sh
 ibmcloud secrets-manager notifications-registration-create \
-    --event-notifications-instance-crn=crn:v1:bluemix:public:event-notifications:us-south:a/22018f3c34ff4ff193698d15ca316946:578ad1a4-2fd8-4e66-95d5-79a842ba91f8:: \
-    --event-notifications-source-name='My Secrets Manager' \
-    --event-notifications-source-description='Optional description of this source in an Event Notifications instance.'
+    --event-notifications-instance-crn crn:v1:bluemix:public:event-notifications:us-south:a/22018f3c34ff4ff193698d15ca316946:578ad1a4-2fd8-4e66-95d5-79a842ba91f8:: \
+    --event-notifications-source-name 'My Secrets Manager' \
+    --event-notifications-source-description 'Optional description of this source in an Event Notifications instance.'
 ```
 {: pre}
 
@@ -2514,7 +3181,7 @@ The following example shows the format of the SecretActionPrototype object.
 ```json
 
 {
-  "action_type" : "public_cert_action_validate_dns_challenge"
+  "action_type" : "private_cert_action_revoke_certificate"
 }
 ```
 {: codeblock}
