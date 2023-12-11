@@ -2,7 +2,7 @@
 
 copyright:
   years: 2023
-lastupdated: "2023-10-03"
+lastupdated: "2023-12-11"
 
 subcollection: secrets-manager
 
@@ -539,9 +539,9 @@ ibmcloud secrets-manager secret-create [--secret-prototype SECRET-PROTOTYPE]
     The maximum length is `36` characters. The minimum length is `7` characters. The value must match regular expression `/^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|default)$/`.
 
 `--secret-type` (string)
-:   The secret type. Supported types are arbitrary, certificates (imported, public, and private), IAM credentials, key-value, and user credentials. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+:   The secret type. Supported types are arbitrary, imported_cert, public_cert, private_cert, iam_credentials, service_credentials, kv, and username_password. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
 
-    Allowable values are: `arbitrary`, `imported_cert`, `public_cert`, `iam_credentials`, `kv`, `username_password`, `private_cert`.
+    Allowable values are: `arbitrary`, `iam_credentials`, `imported_cert`, `kv`, `private_cert`, `public_cert`, `service_credentials`, `username_password`.
 
 `--arbitrary-payload` (string)
 :   The secret data that is assigned to an `arbitrary` secret. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
@@ -553,10 +553,10 @@ ibmcloud secrets-manager secret-create [--secret-prototype SECRET-PROTOTYPE]
 
     Provide a JSON string option or specify a JSON file to read from by providing a filepath option that begins with a `@`, e.g. `--secret-version-custom-metadata=@path/to/file.json`.
 
-`--iam-credentials-ttl` (string)
-:   The time-to-live (TTL) or lease duration to assign to credentials that are generated. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+`--secret-ttl` (string)
+:   The time-to-live (TTL) or lease duration to assign to credentials that are generated. Supported secret types: iam_credentials, service_credentials. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
 
-    The maximum length is `10` characters. The minimum length is `2` characters. The value must match regular expression `/^[0-9]+[s,m,h,d]{0,1}$/`.
+    The maximum length is `10` characters. The minimum length is `1` character. The value must match regular expression `/^[0-9]+[s,m,h,d]{0,1}$/`.
 
 `--iam-credentials-access-groups` ([]string)
 :   Access Groups that you can use for an `iam_credentials` secret. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
@@ -603,12 +603,12 @@ ibmcloud secrets-manager secret-create [--secret-prototype SECRET-PROTOTYPE]
 
     The maximum length is `128` characters. The minimum length is `2` characters. The value must match regular expression `/^[A-Za-z0-9][A-Za-z0-9]*(?:_?-?\\.?[A-Za-z0-9]+)*$/`.
 
-`--private-cert-common-name` (string)
+`--certificate-common-name` (string)
 :   The Common Name (CN) represents the server name that is protected by the SSL certificate. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
 
     The maximum length is `128` characters. The minimum length is `4` characters. The value must match regular expression `/(.*?)/`.
 
-`--private-cert-alt-names` ([]string)
+`--certificate-alt-names` ([]string)
 :   With the Subject Alternative Name field, you can specify additional hostnames to be protected by a single SSL certificate. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
 
     The list items must match regular expression `/^(.*?)$/`. The maximum length is `99` items. The minimum length is `0` items.
@@ -666,6 +666,11 @@ ibmcloud secrets-manager secret-create [--secret-prototype SECRET-PROTOTYPE]
 
     The default value is `true`.
 
+`--secret-source-service` ([`ServiceCredentialsSecretSourceService`](#cli-service-credentials-secret-source-service-example-schema))
+:   The properties that are required to create the service credentials for the specified source service instance. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+
+    Provide a JSON string option or specify a JSON file to read from by providing a filepath option that begins with a `@`, e.g. `--secret-source-service=@path/to/file.json`.
+
 `--username-password-username` (string)
 :   The username that is assigned to an `username_password` secret. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
 
@@ -682,10 +687,10 @@ ibmcloud secrets-manager secret-create [--secret-prototype SECRET-PROTOTYPE]
 Example request
 
 ```sh
-ibmcloud secrets-manager secret-create --secret-name=example-arbitrary-secret --secret-secret-type=arbitrary --arbitrary-payload=super-secret-data
+ibmcloud secrets-manager secret-create --secret-name=example-arbitrary-secret --secret-type=arbitrary --arbitrary-payload=example-secret-data
 
 ibmcloud secrets-manager secret-create \
-  --secret-prototype='{"name": "example-arbitrary-secret", "secret_type": "arbitrary", "payload":"super-secret-data"}'
+  --secret-prototype='{"name": "example-arbitrary-secret", "secret_type": "arbitrary", "payload":"example-secret-data"}'
 
 ```
 {: pre}
@@ -777,7 +782,7 @@ Example secret metadata collection response
     },
     "description" : "Extended description for this secret.",
     "downloaded" : false,
-    "expiration_date" : "2023-10-05T11:49:42Z",
+    "expiration_date" : "2030-10-05T11:49:42Z",
     "id" : "a931192f-b6a9-43d6-a59a-834f3003af7b",
     "intermediate_included" : true,
     "issuer" : "DigiCert",
@@ -795,7 +800,7 @@ Example secret metadata collection response
     "updated_at" : "2022-10-05T21:33:11Z",
     "validity" : {
       "not_before" : "2020-10-05T21:33:11Z",
-      "not_after" : "2023-10-05T11:49:42Z"
+      "not_after" : "2030-10-05T11:49:42Z"
     },
     "versions_total" : 1
   }, {
@@ -809,7 +814,7 @@ Example secret metadata collection response
     },
     "description" : "Extended description for this secret.",
     "downloaded" : false,
-    "expiration_date" : "2023-10-05T11:49:42Z",
+    "expiration_date" : "2030-10-05T11:49:42Z",
     "id" : "f075f0b3-71e4-4a14-b60f-0b38b855a3d1",
     "issuer" : "Lets Encrypt",
     "issuance_info" : {
@@ -838,7 +843,7 @@ Example secret metadata collection response
     "state_description" : "active",
     "validity" : {
       "not_before" : "2020-10-05T21:33:11Z",
-      "not_after" : "2023-10-05T11:49:42Z"
+      "not_after" : "2030-10-05T11:49:42Z"
     },
     "versions_total" : 1
   } ],
@@ -936,7 +941,7 @@ ibmcloud secrets-manager secret-metadata \
 Update the metadata of a secret, such as its name or description.
 
 ```sh
-ibmcloud secrets-manager secret-metadata-update --id ID [--name NAME] [--description DESCRIPTION] [--labels LABELS] [--custom-metadata CUSTOM-METADATA] [--expiration-date EXPIRATION-DATE] [--iam-credentials-ttl IAM-CREDENTIALS-TTL] [--rotation ROTATION]
+ibmcloud secrets-manager secret-metadata-update --id ID [--name NAME] [--description DESCRIPTION] [--labels LABELS] [--custom-metadata CUSTOM-METADATA] [--expiration-date EXPIRATION-DATE] [--ttl TTL] [--rotation ROTATION]
 ```
 
 
@@ -974,10 +979,10 @@ ibmcloud secrets-manager secret-metadata-update --id ID [--name NAME] [--descrip
 `--expiration-date` (strfmt.DateTime)
 :   The date when the secret material expires. The date format follows the `RFC 3339` format. Supported secret types: Arbitrary, username_password.
 
-`--iam-credentials-ttl` (string)
-:   The time-to-live (TTL) or lease duration to assign to credentials that are generated.
+`--ttl` (string)
+:   The time-to-live (TTL) or lease duration to assign to credentials that are generated. Supported secret types: iam_credentials, service_credentials.
 
-    The maximum length is `10` characters. The minimum length is `2` characters. The value must match regular expression `/^[0-9]+[s,m,h,d]{0,1}$/`.
+    The maximum length is `10` characters. The minimum length is `1` character. The value must match regular expression `/^[0-9]+[s,m,h,d]{0,1}$/`.
 
 `--rotation` ([`RotationPolicy`](#cli-rotation-policy-example-schema))
 :   This field indicates whether Secrets Manager rotates your secrets automatically. Supported secret types: username_password, private_cert, public_cert, iam_credentials.
@@ -1055,9 +1060,9 @@ ibmcloud secrets-manager secret-by-name --secret-type SECRET-TYPE --name NAME --
 {: #secrets-manager-secret-by-name-cli-options}
 
 `--secret-type` (string)
-:   The secret type. Supported types are arbitrary, certificates (imported, public, and private), IAM credentials, key-value, and user credentials. Required.
+:   The secret type. Supported types are arbitrary, imported_cert, public_cert, private_cert, iam_credentials, service_credentials, kv, and username_password. Required.
 
-    Allowable values are: `arbitrary`, `imported_cert`, `public_cert`, `iam_credentials`, `kv`, `username_password`, `private_cert`.
+    Allowable values are: `arbitrary`, `iam_credentials`, `imported_cert`, `kv`, `private_cert`, `public_cert`, `service_credentials`, `username_password`.
 
 `--name` (string)
 :   A human-readable name to assign to your secret.
@@ -1172,7 +1177,7 @@ ibmcloud secrets-manager secret-version-create --secret-id SECRET-ID [--secret-v
 Example request
 
 ```sh
-ibmcloud secrets-manager secret-version-create --arbitrary-payload='updated secret credentials' --secret-version-custom-metadata='{"anyKey": "anyValue"}'
+ibmcloud secrets-manager secret-version-create --secret-id 0b5571f7-21e6-42b7-91c5-3f5ac9793a46 --arbitrary-payload='updated secret credentials' --secret-version-custom-metadata='{"anyKey": "anyValue"}'
 
 ibmcloud secrets-manager secret-version-create \
   --secret-id=0b5571f7-21e6-42b7-91c5-3f5ac9793a46 \
@@ -1220,7 +1225,7 @@ Example secret version metadata collection response
   "versions" : [ {
     "created_at" : "2022-06-27T11:58:15Z",
     "created_by" : "iam-ServiceId-e4a2f0a4-3c76-4bef-b1f2-fbeae11c0f21",
-    "expiration_date" : "2023-10-05T11:49:42Z",
+    "expiration_date" : "2030-10-05T11:49:42Z",
     "id" : "bc656587-8fda-4d05-9ad8-b1de1ec7e712",
     "payload_available" : true,
     "secret_group_id" : "67d025e1-0248-418f-83ba-deb0ebfb9b4a",
@@ -1229,7 +1234,7 @@ Example secret version metadata collection response
     "secret_type" : "imported_cert",
     "serial_number" : "38:eb:01:a3:22:e9:de:55:24:56:9b:14:cb:e2:f3:e3:e2:fb:f5:18",
     "validity" : {
-      "not_after" : "2023-10-05T11:49:42Z",
+      "not_after" : "2030-10-05T11:49:42Z",
       "not_before" : "2022-06-27T11:58:15Z"
     },
     "version_custom_metadata" : {
@@ -2062,7 +2067,7 @@ ibmcloud secrets-manager configuration-create [--configuration-prototype CONFIGU
     Provide a JSON string option or specify a JSON file to read from by providing a filepath option that begins with a `@`, e.g. `--configuration-prototype=@path/to/file.json`.
 
 `--config-type` (string)
-:   The configuration type. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+:   The configuration type. Can be one of: iam_credentials_configuration, public_cert_configuration_ca_lets_encrypt, public_cert_configuration_dns_classic_infrastructure, public_cert_configuration_dns_cloud_internet_services, private_cert_configuration_root_ca, private_cert_configuration_intermediate_ca, private_cert_configuration_template. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
 
     Allowable values are: `public_cert_configuration_ca_lets_encrypt`, `public_cert_configuration_dns_classic_infrastructure`, `public_cert_configuration_dns_cloud_internet_services`, `iam_credentials_configuration`, `private_cert_configuration_root_ca`, `private_cert_configuration_intermediate_ca`, `private_cert_configuration_template`.
 
@@ -2090,12 +2095,12 @@ ibmcloud secrets-manager configuration-create [--configuration-prototype CONFIGU
 `--private-cert-issuing-certificate-urls-encoded` (bool)
 :   This field determines whether to encode the URL of the issuing certificate in the certificates that are issued by this certificate authority. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
 
-`--private-cert-common-name` (string)
+`--certificate-common-name` (string)
 :   The Common Name (CN) represents the server name that is protected by the SSL certificate. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
 
     The maximum length is `128` characters. The minimum length is `4` characters. The value must match regular expression `/(.*?)/`.
 
-`--private-cert-alt-names` ([]string)
+`--certificate-alt-names` ([]string)
 :   With the Subject Alternative Name field, you can specify additional hostnames to be protected by a single SSL certificate. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
 
     The list items must match regular expression `/^(.*?)$/`. The maximum length is `99` items. The minimum length is `0` items.
@@ -2451,7 +2456,7 @@ Example response for configuring metadata collection
     "config_type" : "private_cert_configuration_root_ca",
     "created_at" : "2022-11-08T11:22:19Z",
     "created_by" : "iam-ServiceId-1ba95813-1b0f-45c1-b46c-969a5fda08d1",
-    "expiration_date" : "2023-03-31T01:13:07Z",
+    "expiration_date" : "2030-03-31T01:13:07Z",
     "key_bits" : 2048,
     "key_type" : "rsa",
     "name" : "internal-root",
@@ -2463,7 +2468,7 @@ Example response for configuring metadata collection
     "config_type" : "private_cert_configuration_intermediate_ca",
     "created_at" : "2022-11-08T11:22:19Z",
     "created_by" : "iam-ServiceId-1ba95813-1b0f-45c1-b46c-969a5fda08d1",
-    "expiration_date" : "2023-03-31T01:13:07Z",
+    "expiration_date" : "2030-03-31T01:13:07Z",
     "issuer" : "internal-root",
     "name" : "example-intermediate-CA",
     "key_bits" : 2048,
@@ -2836,12 +2841,12 @@ ibmcloud secrets-manager configuration-action-create --name NAME [--config-actio
 
     Allowable values are: `private_cert_configuration_action_rotate_crl`, `private_cert_configuration_action_sign_intermediate`, `private_cert_configuration_action_sign_csr`, `private_cert_configuration_action_set_signed`, `private_cert_configuration_action_revoke_ca_certificate`.
 
-`--private-cert-common-name` (string)
+`--certificate-common-name` (string)
 :   The Common Name (CN) represents the server name that is protected by the SSL certificate. This option provides a value for a sub-field of the JSON option 'config-action-prototype'. It is mutually exclusive with that option.
 
     The maximum length is `128` characters. The minimum length is `4` characters. The value must match regular expression `/(.*?)/`.
 
-`--private-cert-alt-names` ([]string)
+`--certificate-alt-names` ([]string)
 :   With the Subject Alternative Name field, you can specify additional hostnames to be protected by a single SSL certificate. This option provides a value for a sub-field of the JSON option 'config-action-prototype'. It is mutually exclusive with that option.
 
     The list items must match regular expression `/^(.*?)$/`. The maximum length is `99` items. The minimum length is `0` items.
@@ -2962,29 +2967,7 @@ Alternatively, granular options are available for the sub-fields of JSON string 
 ibmcloud secrets-manager configuration-action-create \
     --name configuration-name \
     --config-type private_cert_configuration_root_ca \
-    --config-action-action-type private_cert_configuration_action_rotate_crl \
-    --private-cert-common-name localhost \
-    --private-cert-alt-names s1.example.com,*.s2.example.com \
-    --private-cert-ip-sans '1.1.1.1, 2.2.2.2' \
-    --private-cert-uri-sans exampleString \
-    --private-cert-other-sans 2.5.4.5;UTF8:*.example.com \
-    --private-cert-ttl 12h \
-    --private-cert-format pem \
-    --private-cert-max-path-length 38 \
-    --private-cert-exclude-cn-from-sans true \
-    --private-cert-permitted-dns-domains exampleString \
-    --config-action-use-csr-values true \
-    --private-cert-subject-organizational-unit exampleString \
-    --private-cert-subject-organization exampleString \
-    --private-cert-subject-country exampleString \
-    --private-cert-subject-locality exampleString \
-    --private-cert-subject-province exampleString \
-    --private-cert-subject-street-address exampleString \
-    --private-cert-subject-postal-code exampleString \
-    --private-cert-serial-number d9:be:fe:35:ba:09:42:b5:35:ba:09:42:b5 \
-    --private-cert-csr exampleString \
-    --config-action-intermediate-certificate-authority my-secret-engine-config \
-    --imported-cert-certificate exampleString
+    --config-action-action-type private_cert_configuration_action_rotate_crl
 ```
 {: pre}
 
@@ -3216,7 +3199,7 @@ The following example shows the format of the SecretPrototype object.
     "anyKey" : "anyValue"
   },
   "description" : "Description of my arbitrary secret.",
-  "expiration_date" : "2023-10-05T11:49:42Z",
+  "expiration_date" : "2030-10-05T11:49:42Z",
   "labels" : [ "dev", "us-south" ],
   "name" : "example-arbitrary-secret",
   "secret_group_id" : "default",
