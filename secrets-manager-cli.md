@@ -1,8 +1,8 @@
 ---
 
 copyright:
-  years: 2023
-lastupdated: "2023-12-21"
+  years: 2024
+lastupdated: "2024-01-03"
 
 subcollection: secrets-manager
 
@@ -136,7 +136,7 @@ ibmcloud secrets-manager docs
 :   The Secrets Manager Instance ID assigned by the service provider.
 
 `--region` (string)
-:   The region where you provisioned your Secrets Manager Instance. Available values: us-south, us-east, au-syd, jp-osa, jp-tok, eu-de, eu-gb, ca-tor, br-sao.
+:   The region where you provisioned your Secrets Manager Instance. Available values: us-south, us-east, au-syd, jp-osa, jp-tok, eu-de, eu-gb, eu-es, ca-tor, br-sao.
 
 `--output` (string)
 :   Choose an output format - can be 'json', 'yaml', or 'table'. Defaults to 'table'.
