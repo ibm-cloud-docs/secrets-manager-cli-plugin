@@ -2,7 +2,7 @@
 
 copyright:
   years: 2024
-lastupdated: "2024-01-03"
+lastupdated: "2024-02-07"
 
 subcollection: secrets-manager
 
@@ -62,7 +62,7 @@ keywords: Secrets Manager CLI, Secrets Manager command line, Secrets Manager ter
 You can use the {{site.data.keyword.secrets-manager_full}} command-line interface (CLI) to manage secrets in your {{site.data.keyword.secrets-manager_short}} instance.
 {: shortdesc}
 
-Current version: **`2.0.3`**
+Current version: **`2.0.4`**
 
 ## Prerequisites
 {: #secrets-manager-cli-prereq}
@@ -109,8 +109,10 @@ Current version: **`2.0.3`**
 
 
 ## Globals
+{: #secrets-manager-globals}
 
 ### Commands
+{: #secrets-manager-commands}
 
 #### `ibmcloud secrets-manager docs`
 {: #secrets-manager-cli-docs-command}
@@ -149,6 +151,9 @@ ibmcloud secrets-manager docs
 
 `-q`, `--quiet`
 :   Suppresses verbose messages.
+
+`-v`, `--version`
+:   Prints the plugin version.
 
 #### Example
 {: #secrets-manager-global-options-example}
@@ -498,7 +503,7 @@ Use this operation to either generate or import an existing secret, such as a TL
 To learn more about the types of secrets that you can create with Secrets Manager, check out the [docs](/docs/secrets-manager?topic=secrets-manager-what-is-secret).
 
 ```sh
-ibmcloud secrets-manager secret-create [--secret-prototype SECRET-PROTOTYPE]
+ibmcloud secrets-manager secret-create [--secret-prototype SECRET-PROTOTYPE | --secret-custom-metadata SECRET-CUSTOM-METADATA --secret-description SECRET-DESCRIPTION --secret-expiration-date SECRET-EXPIRATION-DATE --secret-labels SECRET-LABELS --secret-name SECRET-NAME --secret-group-id SECRET-GROUP-ID --secret-type SECRET-TYPE --arbitrary-payload ARBITRARY-PAYLOAD --secret-version-custom-metadata SECRET-VERSION-CUSTOM-METADATA --secret-ttl SECRET-TTL --iam-credentials-access-groups IAM-CREDENTIALS-ACCESS-GROUPS --iam-credentials-service-id IAM-CREDENTIALS-SERVICE-ID --iam-credentials-reuse-apikey IAM-CREDENTIALS-REUSE-APIKEY --secret-rotation SECRET-ROTATION --imported-cert-certificate IMPORTED-CERT-CERTIFICATE --imported-cert-intermediate IMPORTED-CERT-INTERMEDIATE --imported-cert-private-key IMPORTED-CERT-PRIVATE-KEY --kv-data KV-DATA --private-cert-template-name PRIVATE-CERT-TEMPLATE-NAME --certificate-common-name CERTIFICATE-COMMON-NAME --certificate-alt-names CERTIFICATE-ALT-NAMES --private-cert-ip-sans PRIVATE-CERT-IP-SANS --private-cert-uri-sans PRIVATE-CERT-URI-SANS --private-cert-other-sans PRIVATE-CERT-OTHER-SANS --private-cert-csr PRIVATE-CERT-CSR --private-cert-format PRIVATE-CERT-FORMAT --private-cert-private-key-format PRIVATE-CERT-PRIVATE-KEY-FORMAT --private-cert-exclude-cn-from-sans PRIVATE-CERT-EXCLUDE-CN-FROM-SANS --public-cert-key-algorithm PUBLIC-CERT-KEY-ALGORITHM --public-cert-ca PUBLIC-CERT-CA --public-cert-dns PUBLIC-CERT-DNS --public-cert-bundle-ca PUBLIC-CERT-BUNDLE-CA --secret-source-service SECRET-SOURCE-SERVICE --username-password-username USERNAME-PASSWORD-USERNAME --username-password-password USERNAME-PASSWORD-PASSWORD --username-password-policy USERNAME-PASSWORD-POLICY]
 ```
 
 
@@ -556,7 +561,7 @@ ibmcloud secrets-manager secret-create [--secret-prototype SECRET-PROTOTYPE]
 `--secret-ttl` (string)
 :   The time-to-live (TTL) or lease duration to assign to credentials that are generated. Supported secret types: iam_credentials, service_credentials. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
 
-    The maximum length is `10` characters. The minimum length is `1` character. The value must match regular expression `/^[0-9]+[s,m,h,d]{0,1}$/`.
+    The maximum length is `10` characters. The value must match regular expression `/^[0-9]+[s,m,h,d]{0,1}$/`.
 
 `--iam-credentials-access-groups` ([]string)
 :   Access Groups that you can use for an `iam_credentials` secret. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
@@ -606,7 +611,7 @@ ibmcloud secrets-manager secret-create [--secret-prototype SECRET-PROTOTYPE]
 `--certificate-common-name` (string)
 :   The Common Name (CN) represents the server name that is protected by the SSL certificate. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
 
-    The maximum length is `128` characters. The minimum length is `4` characters. The value must match regular expression `/(.*?)/`.
+    The minimum length is `4` characters.
 
 `--certificate-alt-names` ([]string)
 :   With the Subject Alternative Name field, you can specify additional hostnames to be protected by a single SSL certificate. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
@@ -677,9 +682,14 @@ ibmcloud secrets-manager secret-create [--secret-prototype SECRET-PROTOTYPE]
     The maximum length is `64` characters. The minimum length is `2` characters. The value must match regular expression `/[A-Za-z0-9+-=.]*/`.
 
 `--username-password-password` (string)
-:   The password that is assigned to an `username_password` secret. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+:   The password that is assigned to an `username_password` secret. If you omit this parameter, Secrets Manager  generates a new random password for your secret. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
 
-    The maximum length is `64` characters. The minimum length is `6` characters. The value must match regular expression `/.{6,64}/`.
+    The maximum length is `256` characters. The minimum length is `6` characters. The value must match regular expression `/.{6,256}/`.
+
+`--username-password-policy` ([`PasswordGenerationPolicy`](#cli-password-generation-policy-example-schema))
+:   Policy for auto-generated passwords. This option provides a value for a sub-field of the JSON option 'secret-prototype'. It is mutually exclusive with that option.
+
+    Provide a JSON string option or specify a JSON file to read from by providing a filepath option that begins with a `@`, e.g. `--username-password-policy=@path/to/file.json`.
 
 #### Example
 {: #secrets-manager-secret-create-examples}
@@ -941,7 +951,7 @@ ibmcloud secrets-manager secret-metadata \
 Update the metadata of a secret, such as its name or description.
 
 ```sh
-ibmcloud secrets-manager secret-metadata-update --id ID [--name NAME] [--description DESCRIPTION] [--labels LABELS] [--custom-metadata CUSTOM-METADATA] [--expiration-date EXPIRATION-DATE] [--ttl TTL] [--rotation ROTATION]
+ibmcloud secrets-manager secret-metadata-update --id ID [--name NAME] [--description DESCRIPTION] [--labels LABELS] [--custom-metadata CUSTOM-METADATA] [--expiration-date EXPIRATION-DATE] [--ttl TTL] [--rotation ROTATION] [--password-generation-policy PASSWORD-GENERATION-POLICY]
 ```
 
 
@@ -987,6 +997,10 @@ ibmcloud secrets-manager secret-metadata-update --id ID [--name NAME] [--descrip
 `--rotation` ([`RotationPolicy`](#cli-rotation-policy-example-schema))
 :   This field indicates whether Secrets Manager rotates your secrets automatically. Supported secret types: username_password, private_cert, public_cert, iam_credentials.
 
+`--password-generation-policy` ([`PasswordGenerationPolicyPatch`](#cli-password-generation-policy-patch-example-schema))
+:   Policy patch for auto-generated passwords. Policy properties that are included in the patch are updated.
+Properties that are not included in the patch remain unchanged.
+
 #### Example
 {: #secrets-manager-secret-metadata-update-examples}
 
@@ -1007,7 +1021,7 @@ ibmcloud secrets-manager secret-metadata-update \
 Create a secret action. This operation supports the following actions:.
 
 ```sh
-ibmcloud secrets-manager secret-action-create --id ID [--secret-action-prototype SECRET-ACTION-PROTOTYPE]
+ibmcloud secrets-manager secret-action-create --id ID [--secret-action-prototype SECRET-ACTION-PROTOTYPE | --secret-action-type SECRET-ACTION-TYPE]
 ```
 
 
@@ -1097,7 +1111,7 @@ Create and manage the versions of your secrets.
 Create a new secret version.
 
 ```sh
-ibmcloud secrets-manager secret-version-create --secret-id SECRET-ID [--secret-version-prototype SECRET-VERSION-PROTOTYPE]
+ibmcloud secrets-manager secret-version-create --secret-id SECRET-ID [--secret-version-prototype SECRET-VERSION-PROTOTYPE | --arbitrary-payload ARBITRARY-PAYLOAD --secret-version-custom-metadata SECRET-VERSION-CUSTOM-METADATA --secret-version-version-custom-metadata SECRET-VERSION-VERSION-CUSTOM-METADATA --secret-version-restore-from-version SECRET-VERSION-RESTORE-FROM-VERSION --imported-cert-certificate IMPORTED-CERT-CERTIFICATE --imported-cert-intermediate IMPORTED-CERT-INTERMEDIATE --imported-cert-private-key IMPORTED-CERT-PRIVATE-KEY --kv-data KV-DATA --private-cert-csr PRIVATE-CERT-CSR --public-cert-rotation PUBLIC-CERT-ROTATION --username-password-password USERNAME-PASSWORD-PASSWORD]
 ```
 
 
@@ -1167,9 +1181,9 @@ ibmcloud secrets-manager secret-version-create --secret-id SECRET-ID [--secret-v
     Provide a JSON string option or specify a JSON file to read from by providing a filepath option that begins with a `@`, e.g. `--public-cert-rotation=@path/to/file.json`.
 
 `--username-password-password` (string)
-:   The password that is assigned to an `username_password` secret. This option provides a value for a sub-field of the JSON option 'secret-version-prototype'. It is mutually exclusive with that option.
+:   The password that is assigned to an `username_password` secret. If you omit this parameter, Secrets Manager  generates a new random password for your secret. This option provides a value for a sub-field of the JSON option 'secret-version-prototype'. It is mutually exclusive with that option.
 
-    The maximum length is `64` characters. The minimum length is `6` characters. The value must match regular expression `/.{6,64}/`.
+    The maximum length is `256` characters. The minimum length is `6` characters. The value must match regular expression `/.{6,256}/`.
 
 #### Example
 {: #secrets-manager-secret-version-create-examples}
@@ -1401,7 +1415,7 @@ Create a secret version action. This operation supports the following actions:
 - `private_cert_action_revoke_certificate`: Revoke a version of a private certificate.
 
 ```sh
-ibmcloud secrets-manager secret-version-action-create --secret-id SECRET-ID --id ID [--secret-version-action-prototype SECRET-VERSION-ACTION-PROTOTYPE]
+ibmcloud secrets-manager secret-version-action-create --secret-id SECRET-ID --id ID [--secret-version-action-prototype SECRET-VERSION-ACTION-PROTOTYPE | --secret-version-action-type SECRET-VERSION-ACTION-TYPE]
 ```
 
 
@@ -1426,7 +1440,7 @@ ibmcloud secrets-manager secret-version-action-create --secret-id SECRET-ID --id
 `--secret-version-action-type` (string)
 :   The type of secret version action. This option provides a value for a sub-field of the JSON option 'secret-version-action-prototype'. It is mutually exclusive with that option.
 
-    Allowable values are: `private_cert_action_revoke_certificate`.
+    Allowable values are: `private_cert_action_revoke_certificate`. Allowable values are: `private_cert_action_revoke_certificate`.
 
 #### Example
 {: #secrets-manager-secret-version-action-create-examples}
@@ -2054,7 +2068,7 @@ You can add multiple configurations for your instance as follows:
 - Up to 10 Certificate Template configurations for private certificates.
 
 ```sh
-ibmcloud secrets-manager configuration-create [--configuration-prototype CONFIGURATION-PROTOTYPE]
+ibmcloud secrets-manager configuration-create [--configuration-prototype CONFIGURATION-PROTOTYPE | --config-type CONFIG-TYPE --name NAME --private-cert-max-ttl PRIVATE-CERT-MAX-TTL --private-cert-crl-expiry PRIVATE-CERT-CRL-EXPIRY --private-cert-crl-disabled PRIVATE-CERT-CRL-DISABLED --private-cert-crl-distribution-points-encoded PRIVATE-CERT-CRL-DISTRIBUTION-POINTS-ENCODED --private-cert-issuing-certificate-urls-encoded PRIVATE-CERT-ISSUING-CERTIFICATE-URLS-ENCODED --certificate-common-name CERTIFICATE-COMMON-NAME --certificate-alt-names CERTIFICATE-ALT-NAMES --private-cert-ip-sans PRIVATE-CERT-IP-SANS --private-cert-uri-sans PRIVATE-CERT-URI-SANS --private-cert-other-sans PRIVATE-CERT-OTHER-SANS --private-cert-ttl PRIVATE-CERT-TTL --private-cert-format PRIVATE-CERT-FORMAT --private-cert-private-key-format PRIVATE-CERT-PRIVATE-KEY-FORMAT --private-cert-private-key-type PRIVATE-CERT-PRIVATE-KEY-TYPE --private-cert-private-key-bits PRIVATE-CERT-PRIVATE-KEY-BITS --private-cert-max-path-length PRIVATE-CERT-MAX-PATH-LENGTH --private-cert-exclude-cn-from-sans PRIVATE-CERT-EXCLUDE-CN-FROM-SANS --private-cert-permitted-dns-domains PRIVATE-CERT-PERMITTED-DNS-DOMAINS --private-cert-subject-organizational-unit PRIVATE-CERT-SUBJECT-ORGANIZATIONAL-UNIT --private-cert-subject-organization PRIVATE-CERT-SUBJECT-ORGANIZATION --private-cert-subject-country PRIVATE-CERT-SUBJECT-COUNTRY --private-cert-subject-locality PRIVATE-CERT-SUBJECT-LOCALITY --private-cert-subject-province PRIVATE-CERT-SUBJECT-PROVINCE --private-cert-subject-street-address PRIVATE-CERT-SUBJECT-STREET-ADDRESS --private-cert-subject-postal-code PRIVATE-CERT-SUBJECT-POSTAL-CODE --private-cert-serial-number PRIVATE-CERT-SERIAL-NUMBER --private-cert-signing-method PRIVATE-CERT-SIGNING-METHOD --private-cert-issuer PRIVATE-CERT-ISSUER --private-cert-ca-name PRIVATE-CERT-CA-NAME --private-cert-allowed-secret-groups PRIVATE-CERT-ALLOWED-SECRET-GROUPS --private-cert-allow-localhost PRIVATE-CERT-ALLOW-LOCALHOST --private-cert-allowed-domains PRIVATE-CERT-ALLOWED-DOMAINS --private-cert-allowed-domains-template PRIVATE-CERT-ALLOWED-DOMAINS-TEMPLATE --private-cert-allow-bare-domains PRIVATE-CERT-ALLOW-BARE-DOMAINS --private-cert-allow-subdomains PRIVATE-CERT-ALLOW-SUBDOMAINS --private-cert-allow-glob-domains PRIVATE-CERT-ALLOW-GLOB-DOMAINS --private-cert-allow-wildcard PRIVATE-CERT-ALLOW-WILDCARD --private-cert-allow-any-name PRIVATE-CERT-ALLOW-ANY-NAME --private-cert-enforce-hostname PRIVATE-CERT-ENFORCE-HOSTNAME --private-cert-allow-ip-sans PRIVATE-CERT-ALLOW-IP-SANS --private-cert-allowed-uri-sans PRIVATE-CERT-ALLOWED-URI-SANS --private-cert-allowed-other-sans PRIVATE-CERT-ALLOWED-OTHER-SANS --private-cert-server-flag PRIVATE-CERT-SERVER-FLAG --private-cert-client-flag PRIVATE-CERT-CLIENT-FLAG --private-cert-code-signing-flag PRIVATE-CERT-CODE-SIGNING-FLAG --private-cert-email-protection-flag PRIVATE-CERT-EMAIL-PROTECTION-FLAG --private-cert-key-usage PRIVATE-CERT-KEY-USAGE --private-cert-ext-key-usage PRIVATE-CERT-EXT-KEY-USAGE --private-cert-ext-key-usage-oids PRIVATE-CERT-EXT-KEY-USAGE-OIDS --private-cert-use-csr-common-name PRIVATE-CERT-USE-CSR-COMMON-NAME --private-cert-use-cse-sans PRIVATE-CERT-USE-CSE-SANS --private-cert-require-cn PRIVATE-CERT-REQUIRE-CN --private-cert-policy-identifiers PRIVATE-CERT-POLICY-IDENTIFIERS --private-cert-basic-constraints-valid-for-non-ca PRIVATE-CERT-BASIC-CONSTRAINTS-VALID-FOR-NON-CA --private-cert-not-before-duration PRIVATE-CERT-NOT-BEFORE-DURATION --public-cert-lets-encrypt-environment PUBLIC-CERT-LETS-ENCRYPT-ENVIRONMENT --public-cert-lets-encrypt-private-key PUBLIC-CERT-LETS-ENCRYPT-PRIVATE-KEY --public-cert-lets-encrypt-preferred-chain PUBLIC-CERT-LETS-ENCRYPT-PREFERRED-CHAIN --public-cert-cloud-internet-services-apikey PUBLIC-CERT-CLOUD-INTERNET-SERVICES-APIKEY --public-cert-cloud-internet-services-crn PUBLIC-CERT-CLOUD-INTERNET-SERVICES-CRN --public-cert-classic-infrastructure-username PUBLIC-CERT-CLASSIC-INFRASTRUCTURE-USERNAME --public-cert-classic-infrastructure-password PUBLIC-CERT-CLASSIC-INFRASTRUCTURE-PASSWORD --iam-credentials-apikey IAM-CREDENTIALS-APIKEY]
 ```
 
 
@@ -2318,12 +2332,12 @@ ibmcloud secrets-manager configuration-create [--configuration-prototype CONFIGU
 `--public-cert-lets-encrypt-preferred-chain` (string)
 :   The preferred chain with an issuer that matches this Subject Common Name. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
 
-    The maximum length is `30` characters. The minimum length is `2` characters. The value must match regular expression `/(.*?)/`.
+    The value must match regular expression `/(.*?)/`.
 
 `--public-cert-cloud-internet-services-apikey` (string)
-:   An IBM Cloud API key that can to list domains in your Cloud Internet Services instance. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
+:   An IBM Cloud API key that can list domains in your Cloud Internet Services instance and add DNS records. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
 
-    The maximum length is `128` characters. The minimum length is `4` characters. The value must match regular expression `/(.*?)/`.
+    The maximum length is `128` characters. The minimum length is `0` characters. The value must match regular expression `/(.*?)/`.
 
 `--public-cert-cloud-internet-services-crn` (string)
 :   A CRN that uniquely identifies an IBM Cloud resource. This option provides a value for a sub-field of the JSON option 'configuration-prototype'. It is mutually exclusive with that option.
@@ -2736,12 +2750,12 @@ ibmcloud secrets-manager configuration-update --name NAME [--api-key API-KEY] [-
 `--public-cert-lets-encrypt-preferred-chain` (string)
 :   The preferred chain with an issuer that matches this Subject Common Name.
 
-    The maximum length is `30` characters. The minimum length is `2` characters. The value must match regular expression `/(.*?)/`.
+    The value must match regular expression `/(.*?)/`.
 
 `--public-cert-cloud-internet-services-apikey` (string)
-:   An IBM Cloud API key that can to list domains in your Cloud Internet Services instance.
+:   An IBM Cloud API key that can list domains in your Cloud Internet Services instance and add DNS records.
 
-    The maximum length is `128` characters. The minimum length is `4` characters. The value must match regular expression `/(.*?)/`.
+    The maximum length is `128` characters. The minimum length is `0` characters. The value must match regular expression `/(.*?)/`.
 
 `--cloud-internet-services-crn` (string)
 :   A CRN that uniquely identifies an IBM Cloud resource.
@@ -2814,7 +2828,7 @@ Create a configuration action. This operation supports the following actions:
 - `private_cert_configuration_action_rotate_crl`: Rotate the certificate revocation list (CRL) of an intermediate certificate authority.
 
 ```sh
-ibmcloud secrets-manager configuration-action-create --name NAME [--config-action-prototype CONFIG-ACTION-PROTOTYPE] [--config-type CONFIG-TYPE]
+ibmcloud secrets-manager configuration-action-create --name NAME [--config-action-prototype CONFIG-ACTION-PROTOTYPE | --config-action-action-type CONFIG-ACTION-ACTION-TYPE --certificate-common-name CERTIFICATE-COMMON-NAME --certificate-alt-names CERTIFICATE-ALT-NAMES --private-cert-ip-sans PRIVATE-CERT-IP-SANS --private-cert-uri-sans PRIVATE-CERT-URI-SANS --private-cert-other-sans PRIVATE-CERT-OTHER-SANS --private-cert-ttl PRIVATE-CERT-TTL --private-cert-format PRIVATE-CERT-FORMAT --private-cert-max-path-length PRIVATE-CERT-MAX-PATH-LENGTH --private-cert-exclude-cn-from-sans PRIVATE-CERT-EXCLUDE-CN-FROM-SANS --private-cert-permitted-dns-domains PRIVATE-CERT-PERMITTED-DNS-DOMAINS --config-action-use-csr-values CONFIG-ACTION-USE-CSR-VALUES --private-cert-subject-organizational-unit PRIVATE-CERT-SUBJECT-ORGANIZATIONAL-UNIT --private-cert-subject-organization PRIVATE-CERT-SUBJECT-ORGANIZATION --private-cert-subject-country PRIVATE-CERT-SUBJECT-COUNTRY --private-cert-subject-locality PRIVATE-CERT-SUBJECT-LOCALITY --private-cert-subject-province PRIVATE-CERT-SUBJECT-PROVINCE --private-cert-subject-street-address PRIVATE-CERT-SUBJECT-STREET-ADDRESS --private-cert-subject-postal-code PRIVATE-CERT-SUBJECT-POSTAL-CODE --private-cert-serial-number PRIVATE-CERT-SERIAL-NUMBER --private-cert-csr PRIVATE-CERT-CSR --config-action-intermediate-certificate-authority CONFIG-ACTION-INTERMEDIATE-CERTIFICATE-AUTHORITY --imported-cert-certificate IMPORTED-CERT-CERTIFICATE] [--config-type CONFIG-TYPE]
 ```
 
 
@@ -2942,7 +2956,7 @@ ibmcloud secrets-manager configuration-action-create --name NAME [--config-actio
     The maximum length is `4096` characters. The minimum length is `2` characters. The value must match regular expression `/^(-{5}BEGIN.+?-{5}[\\s\\S]+-{5}END.+?-{5}[\\s]*)$/`.
 
 `--config-action-intermediate-certificate-authority` (string)
-:   The unique name of your configuration. This option provides a value for a sub-field of the JSON option 'config-action-prototype'. It is mutually exclusive with that option.
+:   The name of the intermediate certificate authority configuration. This option provides a value for a sub-field of the JSON option 'config-action-prototype'. It is mutually exclusive with that option.
 
     The maximum length is `128` characters. The minimum length is `2` characters. The value must match regular expression `/(.*?)/`.
 
@@ -3144,14 +3158,14 @@ The following example shows the format of the ConfigurationPrototype object.
   "key_bits" : 4096,
   "max_path_length" : -1,
   "exclude_cn_from_sans" : false,
-  "permitted_dns_domains" : [ "exampleString" ],
-  "ou" : [ "exampleString" ],
-  "organization" : [ "exampleString" ],
-  "country" : [ "exampleString" ],
-  "locality" : [ "exampleString" ],
-  "province" : [ "exampleString" ],
-  "street_address" : [ "exampleString" ],
-  "postal_code" : [ "exampleString" ],
+  "permitted_dns_domains" : [ "exampleString", "anotherExampleString" ],
+  "ou" : [ "exampleString", "anotherExampleString" ],
+  "organization" : [ "exampleString", "anotherExampleString" ],
+  "country" : [ "exampleString", "anotherExampleString" ],
+  "locality" : [ "exampleString", "anotherExampleString" ],
+  "province" : [ "exampleString", "anotherExampleString" ],
+  "street_address" : [ "exampleString", "anotherExampleString" ],
+  "postal_code" : [ "exampleString", "anotherExampleString" ],
   "serial_number" : "d9:be:fe:35:ba:09:42:b5:35:ba:09:42:b5"
 }
 ```
