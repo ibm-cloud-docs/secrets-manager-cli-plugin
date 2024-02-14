@@ -2,7 +2,7 @@
 
 copyright:
   years: 2024
-lastupdated: "2024-02-13"
+lastupdated: "2024-02-14"
 
 subcollection: secrets-manager
 
@@ -25,7 +25,7 @@ Current version: **`2.0.4`**
 {: #secrets-manager-cli-prereq}
 
 * Install the [{{site.data.keyword.cloud_notm}} CLI](/docs/cli?topic=cli-getting-started).
-* Install the {{site.data.keyword.secrets-manager_short}} CLI by running the following command:
+* Install the {{site.data.keyword.secrets-manager_short}} CLI plug-in by running the following command:
 
     ```sh
     ibmcloud plugin install secrets-manager
